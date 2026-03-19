@@ -1,0 +1,21 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AppService } from '../../services/app.service';
+
+@Component({
+  selector: 'app-menu',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './menu.component.html',
+})
+export class MenuComponent {
+  constructor(private app: AppService) {}
+  onCreate() {
+    this.app.currentView.set('create');
+  }
+
+  onJoin() {
+    this.app.currentView.set('join');
+  }
+}
