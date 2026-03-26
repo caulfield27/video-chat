@@ -32,7 +32,7 @@ export class JoinRoomComponent {
     try {
       this.isJoining = true;
       this.app.resetSignalingState();
-      await this.ws.connect('ws://localhost:3000', (data) =>
+      await this.ws.connect('wss://webrtc-signaling-service.onrender.com', (data) =>
         this.app.onWsMessage(data),
       );
       await this.rtc.connect();
