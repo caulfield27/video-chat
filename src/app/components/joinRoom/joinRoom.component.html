@@ -1,65 +1,54 @@
-<div
-  class="h-screen w-screen bg-gradient-to-br from-green-800 via-green-900 to-green-800 flex items-center justify-center p-4"
->
-  <div class="max-w-md w-full">
+<div class="app-shell flex items-center justify-center">
+  <section class="glass-card w-full max-w-xl p-6 md:p-8">
     <button
-      class="mb-6 flex items-center gap-2 text-neutral-200 hover:text-white transition-colors"
+      (click)="onBack()"
+      class="inline-flex items-center gap-2 text-sm text-slate-300 transition hover:text-white"
     >
-      <svg
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"
-        />
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
-      Back
+      {{ i18n.t('common.back') }}
     </button>
 
-    <div class="text-center mb-8">
-      <h2 class="text-3xl font-bold text-white mb-2">Join Room</h2>
-      <p class="text-neutral-200">Enter an existing meeting</p>
-    </div>
+    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t('join.title') }}</h2>
+    <p class="mt-2 text-slate-300">{{ i18n.t('join.subtitle') }}</p>
 
-    <div class="space-y-4">
+    <div class="mt-8 space-y-5">
       <div>
-        <label class="block text-white font-medium mb-2">Your Name</label>
+        <label class="field-label">{{ i18n.t('join.displayName') }}</label>
         <input
           [(ngModel)]="userName"
           type="text"
-          placeholder="Enter your name"
-          class="w-full bg-green-700 text-white placeholder:text-neutral-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-950 border border-green-900"
+          [placeholder]="i18n.t('join.displayNamePlaceholder')"
+          class="app-input"
         />
       </div>
 
       <div>
-        <label class="block text-white font-medium mb-2">Room Code</label>
+        <label class="field-label">{{ i18n.t('join.roomCode') }}</label>
         <input
           [(ngModel)]="roomCode"
           type="text"
-          placeholder="Enter room code"
-          maxlength="6"
-          class="w-full bg-green-700 text-white placeholder:text-neutral-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-950 border border-green-900"
+          [placeholder]="i18n.t('join.roomCodePlaceholder')"
+          class="app-input"
         />
       </div>
 
       <button
-        class="w-full bg-neutral-800 hover:bg-neutral-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 mt-6 shadow-lg"
+        (click)="onJoin()"
+        [disabled]="isJoining || !roomCode.trim()"
+        class="app-btn-primary mt-2 w-full"
       >
-        Join Room
+        @if (isJoining) {
+          {{ i18n.t('join.joining') }}
+        } @else {
+          {{ i18n.t('join.submit') }}
+        }
       </button>
-    </div>
 
-    <div class="mt-8 p-4 bg-green-600 rounded-lg">
-      <p class="text-neutral-200 text-sm text-center">
-        <span class="font-semibold text-white text-center">Don't have a code?</span> Ask
-        someone in the meeting to share it with you
+      <p class="text-xs text-slate-400">
+        {{ i18n.t('join.tip') }}
       </p>
     </div>
-  </div>
+  </section>
 </div>

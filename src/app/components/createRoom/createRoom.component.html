@@ -1,43 +1,54 @@
- <div class="h-screen w-screen bg-gradient-to-br from-green-800 via-green-900 to-green-800 flex items-center justify-center p-4">
-      <div class="max-w-md w-full">
-        <button
-          (click)="onBack()"
-          class="mb-6 flex items-center gap-2 text-neutral-200 hover:text-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
+<div class="app-shell flex items-center justify-center">
+  <section class="glass-card w-full max-w-xl p-6 md:p-8">
+    <button
+      (click)="onBack()"
+      class="inline-flex items-center gap-2 text-sm text-slate-300 transition hover:text-white"
+    >
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      {{ i18n.t('common.back') }}
+    </button>
 
-        <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold text-white mb-2">Create Room</h2>
-          <p class="text-neutral-200">Start a new video meeting</p>
-        </div>
+    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t('create.title') }}</h2>
+    <p class="mt-2 text-slate-300">{{ i18n.t('create.subtitle') }}</p>
 
-        <div class="space-y-4">
-          <div>
-            <label class="block text-white font-medium mb-2">Your Name</label>
-            <input
-              [(ngModel)]="userName"
-              type="text"
-              placeholder="Enter your name"
-              class="w-full bg-green-700 text-white placeholder:text-neutral-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-950 border border-green-900">
-          </div>
-
-          <div>
-            <label class="block text-white font-medium mb-2">Room Name</label>
-            <input
-              [(ngModel)]="roomName"
-              type="text"
-              placeholder="Give your room a name"
-              class="w-full bg-green-700 text-white placeholder:text-neutral-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-950 border border-green-900">
-          </div>
-
-          <button
-            (click)="onCreate()"
-            class="w-full bg-neutral-800 hover:bg-neutral-900 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 mt-6 shadow-lg">
-            Create & Enter Room
-          </button>
-        </div>
+    <div class="mt-8 space-y-5">
+      <div>
+        <label class="field-label">{{ i18n.t('create.displayName') }}</label>
+        <input
+          [(ngModel)]="userName"
+          type="text"
+          [placeholder]="i18n.t('create.displayNamePlaceholder')"
+          class="app-input"
+        />
       </div>
+
+      <div>
+        <label class="field-label">{{ i18n.t('create.roomTitle') }}</label>
+        <input
+          [(ngModel)]="roomName"
+          type="text"
+          [placeholder]="i18n.t('create.roomTitlePlaceholder')"
+          class="app-input"
+        />
+      </div>
+
+      <button
+        (click)="onCreate()"
+        [disabled]="isCreating"
+        class="app-btn-primary mt-2 w-full"
+      >
+        @if (isCreating) {
+          {{ i18n.t('create.creating') }}
+        } @else {
+          {{ i18n.t('create.submit') }}
+        }
+      </button>
+
+      <p class="text-xs text-slate-400">
+        {{ i18n.t('create.tip') }}
+      </p>
     </div>
+  </section>
+</div>

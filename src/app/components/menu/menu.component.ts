@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppService } from '../../services/app.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-menu',
@@ -10,7 +11,11 @@ import { AppService } from '../../services/app.service';
   templateUrl: './menu.component.html',
 })
 export class MenuComponent {
-  constructor(private app: AppService) {}
+  constructor(
+    private app: AppService,
+    public i18n: I18nService,
+  ) {}
+
   onCreate() {
     this.app.currentView.set('create');
   }

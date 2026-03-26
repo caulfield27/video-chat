@@ -1,4 +1,73 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0a1020;
+    --bg-surface: #111c35;
+    --bg-soft: #1a2849;
+    --stroke: #253862;
+    --text-primary: #f5f7ff;
+    --text-muted: #9fb0d5;
+    --brand: #2ad1a3;
+    --brand-strong: #1fb38a;
+    --danger: #f97373;
+    --danger-strong: #ea4f62;
+  }
+
+  html,
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: radial-gradient(1200px 700px at 85% 10%, #1f2f57 0%, transparent 55%),
+      radial-gradient(900px 600px at 10% 90%, #18243f 0%, transparent 55%),
+      var(--bg-primary);
+    color: var(--text-primary);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen w-full px-4 py-6 md:px-8 md:py-8;
+  }
+
+  .glass-card {
+    background: linear-gradient(145deg, rgba(17, 28, 53, 0.95), rgba(13, 22, 42, 0.95));
+    border: 1px solid var(--stroke);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    @apply rounded-2xl backdrop-blur-sm;
+  }
+
+  .field-label {
+    color: var(--text-muted);
+    @apply mb-2 block text-sm font-medium;
+  }
+
+  .app-input {
+    border: 1px solid var(--stroke);
+    background: rgba(11, 19, 38, 0.85);
+    color: var(--text-primary);
+    @apply w-full rounded-xl px-4 py-3 outline-none transition focus:ring-2 focus:ring-emerald-300/40;
+  }
+
+  .app-btn-primary {
+    background: linear-gradient(140deg, var(--brand), #39e4b4);
+    color: #032218;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .app-btn-secondary {
+    border: 1px solid var(--stroke);
+    color: var(--text-primary);
+    background: rgba(17, 28, 53, 0.75);
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition hover:bg-slate-700/40 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .app-btn-danger {
+    background: linear-gradient(140deg, var(--danger), var(--danger-strong));
+    color: #fff;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition hover:brightness-105;
+  }
+}

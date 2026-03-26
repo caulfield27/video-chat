@@ -1,76 +1,52 @@
-<div
-  class="h-screen w-screen bg-gradient-to-br from-green-800 via-green-900 to-green-800 flex items-center justify-center"
->
-  <div class="max-w-md w-full mx-4">
-    <div class="text-center mb-12">
-      <div
-        class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
-      >
-        <svg
-          class="w-10 h-10 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-          />
-        </svg>
-      </div>
-      <h1 class="text-4xl font-bold text-white mb-2">Video Chat</h1>
-      <p class="text-neutral-200 text-lg">Connect with anyone, anywhere</p>
-    </div>
+<div class="app-shell flex items-center justify-center">
+  <section class="glass-card w-full max-w-6xl overflow-hidden">
+    <div class="grid md:grid-cols-2">
+      <aside class="border-b border-slate-700/40 bg-slate-950/30 p-8 md:border-b-0 md:border-r">
+        <div class="inline-flex items-center gap-3 rounded-xl border border-slate-600/40 bg-slate-900/70 px-4 py-2">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-300 animate-pulse"></span>
+          <span class="text-sm text-slate-300">{{ i18n.t('menu.badge') }}</span>
+        </div>
 
-    <div class="space-y-4">
-      <button
-        (click)="onCreate()"
-        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-3 shadow-lg"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Create Room
-      </button>
+        <h1 class="mt-8 text-4xl font-bold leading-tight md:text-5xl">
+          {{ i18n.t('menu.heroTitle1') }}
+          <span class="block text-emerald-300">{{ i18n.t('menu.heroTitle2') }}</span>
+        </h1>
 
-      <button
-        (click)="onJoin()"
-        class="w-full bg-neutral-900 hover:bg-neutral-950 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-3 shadow-lg"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13.828 10.172a4 4 0 00-5.656 0l-4.243 4.243a4 4 0 105.656 5.656l4.243-4.243"
-          />
-        </svg>
-        Join Room
-      </button>
-    </div>
+        <p class="mt-5 max-w-md text-slate-300">
+          {{ i18n.t('menu.description') }}
+        </p>
 
-    <div class="mt-8 p-4 bg-green-600 rounded-lg">
-      <p class="text-neutral-200 text-sm text-center">
-        <span class="font-semibold text-white">Pro tip:</span> Share your room
-        code with others to invite them to your meeting
-      </p>
+        <div class="mt-8 space-y-3 text-sm text-slate-300">
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point1') }}</p>
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point2') }}</p>
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point3') }}</p>
+        </div>
+      </aside>
+
+      <main class="p-8 md:p-10">
+        <h2 class="text-2xl font-semibold">{{ i18n.t('menu.heading') }}</h2>
+        <p class="mt-2 text-slate-300">{{ i18n.t('menu.subheading') }}</p>
+
+        <div class="mt-8 space-y-4">
+          <button (click)="onCreate()" class="app-btn-primary w-full">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ i18n.t('menu.create') }}
+          </button>
+
+          <button (click)="onJoin()" class="app-btn-secondary w-full">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4.243 4.243a4 4 0 105.656 5.656l4.243-4.243" />
+            </svg>
+            {{ i18n.t('menu.join') }}
+          </button>
+        </div>
+
+        <div class="mt-8 rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-sm text-slate-300">
+          {{ i18n.t('menu.tip') }}
+        </div>
+      </main>
     </div>
-  </div>
+  </section>
 </div>

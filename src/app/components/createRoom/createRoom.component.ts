@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppService } from '../../services/app.service';
+import { WebsocketService } from '../../../shared/services/websocket.service';
+import { v4 as uuidv4 } from 'uuid';
+import { WebRtcService } from '@/shared/services/webRtc.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-create-room',
@@ -12,14 +16,40 @@ import { AppService } from '../../services/app.service';
 export class CreateRoomComponent {
   userName = '';
   roomName = '';
+  isCreating: boolean = false;
 
-  constructor(private app: AppService) {}
+  constructor(
+    private app: AppService,
+    private ws: WebsocketService,
+    private rtc: WebRtcService,
+    public i18n: I18nService,
+  ) {}
 
   onBack() {
     this.app.currentView.set('menu');
   }
 
-  onCreate() {
-    this.app.currentView.set('call');
+  async onCreate() {
+    try {
+      this.isCreating = true;
+      this.app.resetSignalingState();
+      await this.ws.connect('ws://localhost:3000', (data) =>
+        this.app.onWsMessage(data),
+      );
+      await this.rtc.connect();
+      const roomId = uuidv4();
+      this.app.roomId.set(roomId);
+      this.ws.send({
+        type: 'createRoom',
+        username: this.userName,
+        roomname: this.roomName,
+        roomId,
+      });
+      this.app.currentView.set('call');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.isCreating = false;
+    }
   }
 }
