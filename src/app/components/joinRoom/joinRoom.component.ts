@@ -43,7 +43,7 @@ export class JoinRoomComponent {
 
       this.ws.send({
         type: 'joinRoom',
-        roomId,
+        roomId
       });
     } catch (e) {
       console.error(e);

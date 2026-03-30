@@ -67,18 +67,6 @@ export class AppService {
       case 'joined':
         await this.rtc.createOffer(this.roomId());
         break;
-      case 'joined-metadata':
-        this.remoteUsers.update((prev) => [
-          ...prev,
-          {
-            streamId: signal.streamId!,
-            username: signal.userName!,
-            isMuted: false,
-            isVideoOff: false,
-            stream: null,
-            color: this.randomColor,
-          },
-        ]);
     }
   }
 
@@ -87,10 +75,33 @@ export class AppService {
       const parsed = JSON.parse(event.data as string) as IMessage;
 
       if (parsed.type === 'self-joined') {
+        this.remoteUsers.update((prev) => [
+          ...prev,
+          ...parsed.clients!.map((c) => ({
+            streamId: c.streamId,
+            userName: c.userName,
+            isMuted: false,
+            isVideoOff: false,
+            stream: null,
+            color: this.randomColor,
+          })),
+        ]);
         this.roomName.set(parsed.roomName!);
         this.roomId.set(parsed.roomId ?? null);
         this.currentView.set('call');
         return;
+      } else if (parsed.type === 'joined-metadata') {
+        this.remoteUsers.update((prev) => [
+          ...prev,
+          {
+            streamId: parsed.streamId!,
+            userName: parsed.userName!,
+            isMuted: false,
+            isVideoOff: false,
+            stream: null,
+            color: this.randomColor,
+          },
+        ]);
       }
 
       if (

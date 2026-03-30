@@ -44,7 +44,6 @@ export class CreateRoomComponent {
       this.app.roomId.set(roomId);
       this.ws.send({
         type: 'createRoom',
-        username: this.userName,
         roomname: this.roomName,
         roomId,
       });

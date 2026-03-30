@@ -2,18 +2,45 @@
   class="flex min-h-screen flex-col gap-2 px-2 py-2 md:gap-4 md:px-6 md:py-4"
 >
   <header
-    class="glass-card flex flex-wrap items-center justify-between gap-3 px-3 py-2 md:px-5 md:py-3"
+    class="glass-card flex flex-wrap items-center justify-between gap-3 px-3 py-2 md:px-5 md:py-3 max-sm:flex-col max-sm:justify-start max-sm:items-start"
   >
-    <div>
-      <p class="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
+    <div
+      class="flex flex-row justify-center items-center gap-5 max-sm:gap-3 max-sm:w-full max-sm:flex-col max-sm:justify-start max-sm:items-start"
+    >
+      <p class="text-xs tracking-[0.2em] text-[var(--text-muted)]">
         {{ i18n.t("call.appName") }}: {{ app.roomName() }}
       </p>
-      <h1 class="text-lg font-semibold md:text-xl text-[var(--text-primary)] mt-3">
-        {{ i18n.t("call.room") }}:
-        <span class="py-1 px-2 rounded-md border border-[var(--stroke)]">
-          {{ app.roomId() || "..." }}
+      <div class="relative mt-4 flex flex-row gap-2 max-sm:w-full">
+        <span
+          class="absolute -top-4 left-0 px-1 text-xs text-[var(--text-muted)]"
+        >
+          {{ i18n.t("call.room") }}
         </span>
-      </h1>
+        <div
+          class="flex items-center gap-2 border border-[var(--stroke)] rounded-md px-3 py-2 bg-[var(--bg)] max-sm:w-full max-sm:justify-between"
+        >
+          <span class="font-mono tracking-wider select-all">
+            {{ isCodHidden ? "••••••••" : app.roomId() || "..." }}
+          </span>
+          <div>
+            <button
+              class="text-sm opacity-70 hover:opacity-100 transition"
+              (click)="isCodHidden = !isCodHidden"
+            >
+              {{ isCodHidden ? "👁️" : "🙈" }}
+            </button>
+            <button
+              (click)="handleCopy()"
+              class="text-sm opacity-70 hover:opacity-100 transition"
+            >
+              📋
+            </button>
+          </div>
+        </div>
+        @if (isCopied) {
+          <span class="text-xs text-green-500"> Скопировано! </span>
+        }
+      </div>
     </div>
 
     <div class="flex flex-wrap items-center gap-2 text-sm">
@@ -40,13 +67,15 @@
       <div class="grid h-full w-full gap-2" [ngClass]="gridClass">
         @for (user of app.remoteUsers(); track $index) {
           @if (!user.stream || user.isVideoOff) {
-            <div class="h-full w-full rounded-xl flex justify-center items-center">
+            <div
+              class="h-full w-full rounded-xl flex justify-center items-center"
+            >
               <div
                 class="w-72 h-72 rounded-full text-white flex justify-center items-center"
                 [style.background]="user.color"
               >
                 <span class="text-5xl font-semibold">{{
-                  user.username.toLocaleUpperCase()[0]
+                  user.userName.toLocaleUpperCase()[0]
                 }}</span>
               </div>
             </div>
@@ -57,15 +86,16 @@
               playsinline
               class="h-full w-full rounded-xl object-cover"
             ></video>
-            <span>{{ user }}</span>
           }
         }
       </div>
       <div
-        class="absolute bottom-4 right-4 z-10 w-32 h-44 rounded-xl overflow-hidden border border-[var(--stroke)] bg-black"
+        class="absolute bottom-4 right-4 z-10 w-32 h-44 rounded-xl overflow-hidden bg-neutral-900"
       >
         @if (isVideoOff) {
-          <div class="h-full w-full rounded-xl flex justify-center items-center">
+          <div
+            class="h-full w-full rounded-xl flex justify-center items-center"
+          >
             <div
               class="w-16 h-16 rounded-[100%] text-white flex justify-center items-center"
               [style.background]="color"
@@ -149,7 +179,7 @@
     class="sticky bottom-2 z-20 mx-auto w-full max-w-3xl pb-1 md:bottom-3 md:pb-0"
   >
     <div
-      class="glass-card flex items-center justify-start gap-2 overflow-x-auto px-2 py-2 md:justify-center md:gap-3 md:px-4 md:py-3"
+      class="glass-card flex items-center justify-center gap-2 overflow-x-auto px-2 py-2 md:gap-3 md:px-4 md:py-3"
     >
       <button
         (click)="isMuted = !isMuted"

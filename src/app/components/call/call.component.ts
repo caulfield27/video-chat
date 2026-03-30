@@ -30,7 +30,9 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
   private callStartedAt = 0;
   private durationTimer: ReturnType<typeof setInterval> | null = null;
-  public color = "black";
+  public color = 'black';
+  public isCodHidden: boolean = true;
+  public isCopied: boolean = false;
 
   constructor(
     public app: AppService,
@@ -55,19 +57,14 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
       this.ws.send({
         type: 'joined-metadata',
-        data: {
-          roomId: this.app.roomId(),
-          streamId: stream.id,
-          userName: this.app.userName,
-        },
+        roomId: this.app.roomId(),
+        streamId: stream.id,
+        userName: this.app.userName(),
       });
       this.rtc.addTrackListener((event) => {
         const remoteStream = event.streams[0];
         if (!remoteStream) return;
-        console.log('remote users: ', this.app.remoteUsers());
-        console.log('stream: ', remoteStream.id);
-        
-        
+
         const alreadyExists = this.app
           .remoteUsers()
           .some((user) => user.stream?.id === remoteStream.id);
@@ -119,6 +116,16 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  handleCopy() {
+    navigator.clipboard
+      .writeText(this.app.roomId() ?? '')
+      .then(() => {
+        this.isCopied = true;
+        setTimeout(() => (this.isCopied = false), 1000);
+      })
+      .catch(console.error);
+  }
+
   toggleVideo() {
     this.isVideoOff = !this.isVideoOff;
     this.stream?.getVideoTracks().forEach((track) => {
@@ -161,6 +168,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     const video = this.localVideo?.nativeElement;
     if (video) {
       video.srcObject = stream;
+      video.muted = true;
     }
   }
 
