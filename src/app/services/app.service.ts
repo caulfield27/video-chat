@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { IMessage } from '../types';
+import { IMessage, IRemoteUser } from '../types';
 import { WebRtcService } from '@/shared/services/webRtc.service';
 
 @Injectable({
@@ -8,6 +8,17 @@ import { WebRtcService } from '@/shared/services/webRtc.service';
 export class AppService {
   currentView = signal<'menu' | 'create' | 'join' | 'call'>('menu');
   roomId = signal<string | null>(null);
+  roomName = signal('');
+  userName = signal('');
+  streamId: string = '';
+  remoteUsers = signal<IRemoteUser[]>([]);
+  readonly colors: Record<number, string> = {
+    1: '#0f172a',
+    2: '#dc2626',
+    3: '#f97316',
+    4: '#3b82f6',
+    5: '#22c55e',
+  };
 
   private signalingReady = false;
   private pendingSignals: IMessage[] = [];
@@ -40,10 +51,15 @@ export class AppService {
 
     switch (type) {
       case 'offer':
-        await this.rtc.handleOffer(data as RTCSessionDescriptionInit, this.roomId());
+        await this.rtc.handleOffer(
+          data as RTCSessionDescriptionInit,
+          this.roomId(),
+        );
         break;
       case 'answer':
-        await this.rtc.handleRemoteDescription(data as RTCSessionDescriptionInit);
+        await this.rtc.handleRemoteDescription(
+          data as RTCSessionDescriptionInit,
+        );
         break;
       case 'ice-candidate':
         await this.rtc.addCandidate(data as RTCIceCandidateInit);
@@ -51,6 +67,18 @@ export class AppService {
       case 'joined':
         await this.rtc.createOffer(this.roomId());
         break;
+      case 'joined-metadata':
+        this.remoteUsers.update((prev) => [
+          ...prev,
+          {
+            streamId: signal.streamId!,
+            username: signal.userName!,
+            isMuted: false,
+            isVideoOff: false,
+            stream: null,
+            color: this.randomColor,
+          },
+        ]);
     }
   }
 
@@ -59,6 +87,7 @@ export class AppService {
       const parsed = JSON.parse(event.data as string) as IMessage;
 
       if (parsed.type === 'self-joined') {
+        this.roomName.set(parsed.roomName!);
         this.roomId.set(parsed.roomId ?? null);
         this.currentView.set('call');
         return;
@@ -80,5 +109,9 @@ export class AppService {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  get randomColor() {
+    return this.colors[Math.round(Math.random() * 5)];
   }
 }

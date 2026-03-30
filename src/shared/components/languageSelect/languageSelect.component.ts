@@ -7,7 +7,7 @@ import { I18nService, Lang } from '@/app/services/i18n.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed right-4 top-4 z-50">
+    <div>
       <button
         type="button"
         (click)="toggleLanguageMenu()"

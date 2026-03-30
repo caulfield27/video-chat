@@ -10,6 +10,7 @@ import {
 import { AppService } from '../../services/app.service';
 import { WebRtcService } from '@/shared/services/webRtc.service';
 import { I18nService } from '../../services/i18n.service';
+import { WebsocketService } from '@/shared/services/websocket.service';
 
 @Component({
   selector: 'app-call',
@@ -24,18 +25,21 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   callDuration = signal('00:00');
 
   stream: MediaStream | null = null;
-  remoteVideos: MediaStream[] = [];
 
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
 
   private callStartedAt = 0;
   private durationTimer: ReturnType<typeof setInterval> | null = null;
+  public color = "black";
 
   constructor(
     public app: AppService,
     public i18n: I18nService,
     private rtc: WebRtcService,
-  ) {}
+    private ws: WebsocketService,
+  ) {
+    this.color = app.randomColor;
+  }
 
   async ngAfterViewInit() {
     try {
@@ -45,16 +49,36 @@ export class CallComponent implements AfterViewInit, OnDestroy {
       });
 
       this.stream = stream;
+      this.app.streamId = stream.id;
       this.bindLocalPreview(stream);
       this.rtc.addTracks(stream);
 
+      this.ws.send({
+        type: 'joined-metadata',
+        data: {
+          roomId: this.app.roomId(),
+          streamId: stream.id,
+          userName: this.app.userName,
+        },
+      });
       this.rtc.addTrackListener((event) => {
         const remoteStream = event.streams[0];
         if (!remoteStream) return;
-
-        const alreadyExists = this.remoteVideos.some((s) => s.id === remoteStream.id);
+        console.log('remote users: ', this.app.remoteUsers());
+        console.log('stream: ', remoteStream.id);
+        
+        
+        const alreadyExists = this.app
+          .remoteUsers()
+          .some((user) => user.stream?.id === remoteStream.id);
         if (!alreadyExists) {
-          this.remoteVideos.push(remoteStream);
+          this.app.remoteUsers.update((prev) =>
+            prev.map((u) =>
+              u.streamId === remoteStream.id
+                ? { ...u, stream: remoteStream }
+                : u,
+            ),
+          );
         }
       });
 
@@ -62,6 +86,10 @@ export class CallComponent implements AfterViewInit, OnDestroy {
       this.app.markSignalingReady();
 
       this.startDurationTimer();
+
+      window.onbeforeunload = () => {
+        this.ws.close(1000, this.app.roomId() ?? '');
+      };
     } catch (e) {
       console.error(e);
     }
@@ -75,6 +103,9 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     if (this.stream) {
       this.stream.getTracks().forEach((t) => t.stop());
     }
+
+    this.ws.close(1000, this.app.roomId() ?? '');
+    window.onbeforeunload = null;
   }
 
   onCallEnd() {
@@ -100,7 +131,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   }
 
   get participantsCount() {
-    return this.remoteVideos.length + 1;
+    return this.app.remoteUsers().length + 1;
   }
 
   get participantsLabel() {
@@ -110,14 +141,15 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   }
 
   get localStatusLabel() {
-    if (this.isMuted && this.isVideoOff) return this.i18n.t('call.localStatus.mutedVideoOff');
+    if (this.isMuted && this.isVideoOff)
+      return this.i18n.t('call.localStatus.mutedVideoOff');
     if (this.isMuted) return this.i18n.t('call.localStatus.muted');
     if (this.isVideoOff) return this.i18n.t('call.localStatus.videoOff');
     return this.i18n.t('call.localStatus.live');
   }
 
   get gridClass() {
-    const count = this.remoteVideos.length;
+    const count = this.app.remoteUsers().length;
     if (count <= 1) return 'grid-cols-1';
     if (count === 2) return 'grid-cols-1 lg:grid-cols-2';
     if (count <= 4) return 'grid-cols-1 sm:grid-cols-2';
@@ -129,7 +161,6 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     const video = this.localVideo?.nativeElement;
     if (video) {
       video.srcObject = stream;
-      video.muted = true;
     }
   }
 

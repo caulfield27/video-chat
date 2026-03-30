@@ -33,6 +33,8 @@ export class CreateRoomComponent {
   async onCreate() {
     try {
       this.isCreating = true;
+      this.app.roomName.set(this.roomName);
+      this.app.userName.set(this.userName);
       this.app.resetSignalingState();
       await this.ws.connect(SIGNALING_SERVICE_URL, (data) =>
         this.app.onWsMessage(data),

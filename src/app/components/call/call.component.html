@@ -6,9 +6,9 @@
   >
     <div>
       <p class="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
-        {{ i18n.t("call.appName") }}
+        {{ i18n.t("call.appName") }}: {{ app.roomName() }}
       </p>
-      <h1 class="text-lg font-semibold md:text-xl text-[var(--text-primary)]">
+      <h1 class="text-lg font-semibold md:text-xl text-[var(--text-primary)] mt-3">
         {{ i18n.t("call.room") }}:
         <span class="py-1 px-2 rounded-md border border-[var(--stroke)]">
           {{ app.roomId() || "..." }}
@@ -38,24 +38,51 @@
       class="relative h-full w-full overflow-hidden rounded-2xl bg-black"
     >
       <div class="grid h-full w-full gap-2" [ngClass]="gridClass">
-        @for (stream of remoteVideos; track stream.id) {
-          <video
-            [srcObject]="stream"
-            autoplay
-            playsinline
-            class="h-full w-full rounded-xl object-cover"
-          ></video>
+        @for (user of app.remoteUsers(); track $index) {
+          @if (!user.stream || user.isVideoOff) {
+            <div class="h-full w-full rounded-xl flex justify-center items-center">
+              <div
+                class="w-72 h-72 rounded-full text-white flex justify-center items-center"
+                [style.background]="user.color"
+              >
+                <span class="text-5xl font-semibold">{{
+                  user.username.toLocaleUpperCase()[0]
+                }}</span>
+              </div>
+            </div>
+          } @else {
+            <video
+              [srcObject]="stream"
+              autoplay
+              playsinline
+              class="h-full w-full rounded-xl object-cover"
+            ></video>
+            <span>{{ user }}</span>
+          }
         }
       </div>
       <div
         class="absolute bottom-4 right-4 z-10 w-32 h-44 rounded-xl overflow-hidden border border-[var(--stroke)] bg-black"
       >
-        <video
-          #localVideo
-          autoplay
-          playsinline
-          class="w-full h-full object-cover"
-        ></video>
+        @if (isVideoOff) {
+          <div class="h-full w-full rounded-xl flex justify-center items-center">
+            <div
+              class="w-16 h-16 rounded-[100%] text-white flex justify-center items-center"
+              [style.background]="color"
+            >
+              <span class="text-4xl font-semibold">{{
+                this.app.userName().toLocaleUpperCase()[0]
+              }}</span>
+            </div>
+          </div>
+        } @else {
+          <video
+            #localVideo
+            autoplay
+            playsinline
+            class="w-full h-full object-cover"
+          ></video>
+        }
       </div>
     </section>
 

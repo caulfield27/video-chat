@@ -5,9 +5,8 @@
 @tailwind utilities;
 
 @layer base {
-  /*light*/
-
-  /* :root {
+  
+  :root.light {
     --bg-primary: #fafafa;     
     --bg-surface: #e4e4e7;
     --stroke: #e5e5e5;         
@@ -35,11 +34,9 @@
 
     --bg-radial-1: #e2e8f0;
     --bg-radial-2: #cbd5e1;
-  } */
+  }
 
-  /*dark*/
-
-  :root {
+  :root.dark {
     --bg-primary: #171717;
     --bg-secondary: #18181b;    
     --bg-surface: #0a0a0a;
