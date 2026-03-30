@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { I18nService } from '../../services/i18n.service';
+import { SIGNALING_SERVICE_URL } from '@/app/app.config';
 
 @Component({
   selector: 'app-join-room',
@@ -32,7 +33,7 @@ export class JoinRoomComponent {
     try {
       this.isJoining = true;
       this.app.resetSignalingState();
-      await this.ws.connect('wss://webrtc-signaling-service.onrender.com', (data) =>
+      await this.ws.connect(SIGNALING_SERVICE_URL, (data) =>
         this.app.onWsMessage(data),
       );
       await this.rtc.connect();

@@ -6,6 +6,7 @@ import { WebsocketService } from '../../../shared/services/websocket.service';
 import { v4 as uuidv4 } from 'uuid';
 import { WebRtcService } from '@/shared/services/webRtc.service';
 import { I18nService } from '../../services/i18n.service';
+import { SIGNALING_SERVICE_URL } from '@/app/app.config';
 
 @Component({
   selector: 'app-create-room',
@@ -33,7 +34,7 @@ export class CreateRoomComponent {
     try {
       this.isCreating = true;
       this.app.resetSignalingState();
-      await this.ws.connect('wss://webrtc-signaling-service.onrender.com', (data) =>
+      await this.ws.connect(SIGNALING_SERVICE_URL, (data) =>
         this.app.onWsMessage(data),
       );
       await this.rtc.connect();

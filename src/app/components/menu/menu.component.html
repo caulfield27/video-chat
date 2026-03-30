@@ -1,31 +1,32 @@
+<language-select/>
 <div class="app-shell flex items-center justify-center">
   <section class="glass-card w-full max-w-6xl overflow-hidden">
     <div class="grid md:grid-cols-2">
-      <aside class="border-b border-slate-700/40 bg-slate-950/30 p-8 md:border-b-0 md:border-r">
-        <div class="inline-flex items-center gap-3 rounded-xl border border-slate-600/40 bg-slate-900/70 px-4 py-2">
-          <span class="h-2.5 w-2.5 rounded-full bg-emerald-300 animate-pulse"></span>
-          <span class="text-sm text-slate-300">{{ i18n.t('menu.badge') }}</span>
+      <aside class="border-b border-[var(--bg-surface)] bg-[var(--bg-surface)] p-8 md:border-b-0 md:border-r max-sm:p-4">
+        <div class="inline-flex items-center gap-3 rounded-xl bg-[var(--hover-surface)] px-4 py-2">
+          <span class="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse"></span>
+          <span class="text-sm text-[var(--text-muted)]">{{ i18n.t('menu.badge') }}</span>
         </div>
 
-        <h1 class="mt-8 text-4xl font-bold leading-tight md:text-5xl">
+        <h1 class="mt-8 text-4xl font-bold leading-tight md:text-5xl text-[var(--text-primary)]">
           {{ i18n.t('menu.heroTitle1') }}
-          <span class="block text-emerald-300">{{ i18n.t('menu.heroTitle2') }}</span>
+          <span class="block text-[var(--brand)]">{{ i18n.t('menu.heroTitle2') }}</span>
         </h1>
 
-        <p class="mt-5 max-w-md text-slate-300">
+        <p class="mt-5 max-w-md text-[var(--text-muted)]">
           {{ i18n.t('menu.description') }}
         </p>
 
-        <div class="mt-8 space-y-3 text-sm text-slate-300">
-          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point1') }}</p>
-          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point2') }}</p>
-          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>{{ i18n.t('menu.point3') }}</p>
+        <div class="mt-8 space-y-3 text-sm text-[var(--text-primary)]">
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-[var(--brand)]"></span>{{ i18n.t('menu.point1') }}</p>
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-[var(--brand)]"></span>{{ i18n.t('menu.point2') }}</p>
+          <p class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-[var(--brand)]"></span>{{ i18n.t('menu.point3') }}</p>
         </div>
       </aside>
 
-      <main class="p-8 md:p-10">
-        <h2 class="text-2xl font-semibold">{{ i18n.t('menu.heading') }}</h2>
-        <p class="mt-2 text-slate-300">{{ i18n.t('menu.subheading') }}</p>
+      <main class="p-8 max-sm:p-4 md:p-10 bg-[var(--bg-secondary)]">
+        <h2 class="text-2xl font-semibold text-[var(--text-primary)]">{{ i18n.t('menu.heading') }}</h2>
+        <p class="mt-2 text-[var(--text-muted)]">{{ i18n.t('menu.subheading') }}</p>
 
         <div class="mt-8 space-y-4">
           <button (click)="onCreate()" class="app-btn-primary w-full">
@@ -43,7 +44,7 @@
           </button>
         </div>
 
-        <div class="mt-8 rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-sm text-slate-300">
+        <div class="mt-8 rounded-xl border border-[var(--stroke)] bg-[var(--surface-glass)] p-4 text-sm text-[var(--text-muted)]">
           {{ i18n.t('menu.tip') }}
         </div>
       </main>

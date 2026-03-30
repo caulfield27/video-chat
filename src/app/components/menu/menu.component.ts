@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppService } from '../../services/app.service';
 import { I18nService } from '../../services/i18n.service';
+import { LanguageSelectComponent } from '@/shared/components/languageSelect/languageSelect.component';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LanguageSelectComponent],
   templateUrl: './menu.component.html',
 })
 export class MenuComponent {
