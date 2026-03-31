@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { IMessage, IRemoteUser } from '../types';
+import { IChatMessage, IMessage, IRemoteUser } from '../types';
 import { WebRtcService } from '@/shared/services/webRtc.service';
 
 @Injectable({
@@ -12,6 +12,7 @@ export class AppService {
   userName = signal('');
   streamId: string = '';
   remoteUsers = signal<IRemoteUser[]>([]);
+  chatMessages = signal<IChatMessage[]>([]);
   readonly colors: Record<number, string> = {
     1: '#0f172a',
     2: '#dc2626',
@@ -102,6 +103,43 @@ export class AppService {
             color: this.randomColor,
           },
         ]);
+      } else if (parsed.type === 'disconnected') {
+        this.remoteUsers.update((prev) =>
+          prev.filter((u) => u.streamId !== parsed.streamId),
+        );
+      } else if (parsed.type === 'toggle-mute') {
+        this.remoteUsers.update((prev) =>
+          prev.map((u) => {
+            if (u.streamId === parsed.streamId) {
+              u.isMuted = !u.isMuted;
+              u.stream?.getAudioTracks().forEach((track) => {
+                track.enabled = !track.enabled;
+              });
+            }
+            return u;
+          }),
+        );
+      } else if (parsed.type === 'toggle-video-off') {
+        this.remoteUsers.update((prev) =>
+          prev.map((u) => {
+            if (u.streamId === parsed.streamId) {
+              u.isVideoOff = !u.isVideoOff;
+              u.stream?.getVideoTracks().forEach((track) => {
+                track.enabled = !track.enabled;
+              });
+            }
+            return u;
+          }),
+        );
+      } else if (parsed.type === 'chat-message') {
+        this.chatMessages.update((prev) => [
+          ...prev,
+          {
+            type: 'other',
+            message: parsed.message!,
+            user: parsed.client!,
+          },
+        ]);
       }
 
       if (
@@ -124,5 +162,16 @@ export class AppService {
 
   get randomColor() {
     return this.colors[Math.round(Math.random() * 5)];
+  }
+
+  reset() {
+    this.currentView.set('menu');
+    this.roomId.set(null);
+    this.roomName.set('');
+    this.userName.set('');
+    this.streamId = '';
+    this.remoteUsers.set([]);
+    this.signalingReady = false;
+    this.pendingSignals = [];
   }
 }

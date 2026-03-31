@@ -1,59 +1,225 @@
 ﻿<div
   class="flex min-h-screen flex-col gap-2 px-2 py-2 md:gap-4 md:px-6 md:py-4"
 >
-  <header
-    class="glass-card flex flex-wrap items-center justify-between gap-3 px-3 py-2 md:px-5 md:py-3 max-sm:flex-col max-sm:justify-start max-sm:items-start"
-  >
-    <div
-      class="flex flex-row justify-center items-center gap-5 max-sm:gap-3 max-sm:w-full max-sm:flex-col max-sm:justify-start max-sm:items-start"
-    >
-      <p class="text-xs tracking-[0.2em] text-[var(--text-muted)]">
-        {{ i18n.t("call.appName") }}: {{ app.roomName() }}
-      </p>
-      <div class="relative mt-4 flex flex-row gap-2 max-sm:w-full">
-        <span
-          class="absolute -top-4 left-0 px-1 text-xs text-[var(--text-muted)]"
-        >
-          {{ i18n.t("call.room") }}
-        </span>
-        <div
-          class="flex items-center gap-2 border border-[var(--stroke)] rounded-md px-3 py-2 bg-[var(--bg)] max-sm:w-full max-sm:justify-between"
-        >
-          <span class="font-mono tracking-wider select-all">
-            {{ isCodHidden ? "••••••••" : app.roomId() || "..." }}
-          </span>
-          <div>
-            <button
-              class="text-sm opacity-70 hover:opacity-100 transition"
-              (click)="isCodHidden = !isCodHidden"
+  <header class="glass-card">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg"
             >
-              {{ isCodHidden ? "👁️" : "🙈" }}
-            </button>
-            <button
-              (click)="handleCopy()"
-              class="text-sm opacity-70 hover:opacity-100 transition"
-            >
-              📋
-            </button>
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p
+                class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+              >
+                {{ i18n.t("call.appName") }}
+              </p>
+              <h1
+                class="text-lg font-semibold text-[var(--text-primary)] leading-tight"
+              >
+                {{ app.roomName() }}
+              </h1>
+            </div>
+          </div>
+
+          <div class="h-12 w-px bg-[var(--stroke)]"></div>
+
+          <div class="flex items-center space-x-3">
+            <div>
+              <p
+                class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider mb-1"
+              >
+                {{ i18n.t("call.room") }}
+              </p>
+              <div class="flex items-center space-x-2">
+                <code
+                  class="text-sm font-mono font-semibold text-[var(--brand)] bg-[--bg-surface] px-3 py-1 rounded-md border border-[var(--stroke)]"
+                >
+                  {{ isCodHidden ? "••••••" : app.roomId() }}
+                </code>
+                <div class="flex items-center space-x-1">
+                  <button
+                    (click)="isCodHidden = !isCodHidden"
+                    class="p-2 text-[var(--text-muted)] hover:bg-[--bg-surface] rounded-lg transition-all duration-200"
+                    [title]="isCodHidden! ? 'Hide code' : 'Show code'"
+                  >
+                    <svg
+                      *ngIf="isCodHidden"
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                    <svg
+                      *ngIf="!isCodHidden"
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="handleCopy()"
+                    class="p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-all duration-200 relative group"
+                    title="Copy room code"
+                  >
+                    <svg
+                      *ngIf="!isCopied"
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <svg
+                      *ngIf="isCopied"
+                      class="w-4 h-4 text-emerald-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        @if (isCopied) {
-          <span class="text-xs text-green-500"> Скопировано! </span>
-        }
+        <div class="flex items-center space-x-6">
+          <div
+            class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+          >
+            <div class="relative">
+              <div
+                class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg"
+              >
+                <svg
+                  class="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
+                ></span>
+              </span>
+            </div>
+            <div>
+              <p
+                class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+              >
+                {{ participantsLabel }}
+              </p>
+              <p
+                class="text-lg font-bold text-[var(--text-primary)] leading-tight"
+              >
+                {{ participantsCount }}
+              </p>
+            </div>
+          </div>
+          <div class="h-12 w-px bg-[var(--stroke)]"></div>
+          <div
+            class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+          >
+            <div
+              class="w-9 h-9 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg relative"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"
+                ></span>
+              </span>
+            </div>
+            <div>
+              <p
+                class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+              >
+                {{ i18n.t("call.duration") }}
+              </p>
+              <p
+                class="text-lg font-mono font-bold text-[var(--text-primary)] leading-tight tabular-nums"
+              >
+                {{ callDuration() }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2 text-sm">
-      <span
-        class="rounded-lg border border-[var(--stroke)] bg-[var(--bg-surface)] px-3 py-1 text-[var(--text-primary)]"
-      >
-        {{ participantsCount }} {{ participantsLabel }}
-      </span>
-      <span
-        class="rounded-lg border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-green-500"
-      >
-        {{ callDuration() }}
-      </span>
     </div>
   </header>
 
@@ -66,27 +232,36 @@
     >
       <div class="grid h-full w-full gap-2" [ngClass]="gridClass">
         @for (user of app.remoteUsers(); track $index) {
-          @if (!user.stream || user.isVideoOff) {
-            <div
-              class="h-full w-full rounded-xl flex justify-center items-center"
-            >
+          <div class="relative">
+            @if (user.isMuted) {
               <div
-                class="w-72 h-72 rounded-full text-white flex justify-center items-center"
-                [style.background]="user.color"
+                class="absolute left-5 top-5 bg-red-700 rounded-lg p-3 flex justify-center items-center"
               >
-                <span class="text-5xl font-semibold">{{
-                  user.userName.toLocaleUpperCase()[0]
-                }}</span>
+                <lucide-icon [img]="MicOffIcon" />
               </div>
-            </div>
-          } @else {
-            <video
-              [srcObject]="stream"
-              autoplay
-              playsinline
-              class="h-full w-full rounded-xl object-cover"
-            ></video>
-          }
+            }
+            @if (!user.stream || user.isVideoOff) {
+              <div
+                class="h-full w-full rounded-xl flex justify-center items-center"
+              >
+                <div
+                  class="w-72 h-72 rounded-full text-white flex justify-center items-center"
+                  [style.background]="user.color"
+                >
+                  <span class="text-5xl font-semibold">{{
+                    user.userName.toLocaleUpperCase()[0]
+                  }}</span>
+                </div>
+              </div>
+            } @else {
+              <video
+                [srcObject]="stream"
+                autoplay
+                playsinline
+                class="h-full w-full rounded-xl object-cover"
+              ></video>
+            }
+          </div>
         }
       </div>
       <div
@@ -117,7 +292,7 @@
     </section>
 
     @if (isChatOpen) {
-      <aside class="glass-card flex min-h-[45vh] flex-col overflow-hidden">
+      <!-- <aside class="glass-card flex min-h-[45vh] flex-col overflow-hidden">
         <div
           class="flex items-center justify-between border-b border-[var(--stroke)] px-4 py-3"
         >
@@ -143,31 +318,124 @@
           </button>
         </div>
 
-        <div class="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
-          <div
-            class="rounded-xl border-[var(--brand-strong)] bg-[var(--brand)] p-3 text-[var(--text-secondary)]"
-          >
-            {{ i18n.t("call.chatMsg1") }}
-          </div>
-          <div
-            class="rounded-xl bg-[var(--bg-surface)] p-3 text-[var(--text-primary)]"
-          >
-            {{ i18n.t("call.chatMsg2") }}
-          </div>
+        <div class="flex-1 space-y-3 overflow-y-auto p-4 text-sm min-h-[45vh]">
+          @for (message of app.chatMessages(); track $index) {
+            <div
+              [ngClass]="{
+                'justify-end': message.type === 'me',
+                'justify-start': message.type === 'other',
+                'bg-[var(--brand)]': message.type === 'me',
+                'bg-[var(--bg-surface)]': message.type === 'other',
+                'text-[var(--text-secondary)]': message.type === 'me',
+                'text-[var(--text-primary)]': message.type === 'other',
+              }"
+              class="rounded-3xl border-[var(--brand-strong)] p-3 max-w-48"
+            >
+              {{ message.message }}
+            </div>
+          }
         </div>
 
         <div class="border-t border-[var(--stroke)] p-3">
           <div class="flex gap-2">
             <input
+              [(ngModel)]="message"
+              (keydown)="handleKeyDown($event)"
               class="app-input"
               type="text"
               [placeholder]="i18n.t('call.chatPlaceholder')"
             />
             <button
-              class="app-btn-primary"
+              (click)="handleSendMessage()"
+              class="border-none outline-none rounded-xl px-4 py-3 bg-[var(--brand)]"
               [attr.aria-label]="i18n.t('call.sendAria')"
             >
-              {{ i18n.t("call.send") }}
+              <lucide-icon [img]="SendIcon" />
+            </button>
+          </div>
+        </div>
+      </aside> -->
+      <aside class="glass-card flex h-full max-h-full flex-col overflow-hidden">
+        <!-- Header -->
+        <div
+          class="flex items-center justify-between border-b border-[var(--stroke)] px-4 py-3 shrink-0"
+        >
+          <h2 class="font-semibold">{{ i18n.t("call.chatTitle") }}</h2>
+          <button
+            (click)="toggleChat()"
+            class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--hover-surface)]"
+            [attr.aria-label]="i18n.t('call.chatCloseAria')"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Messages -->
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-4 min-h-0">
+          @for (message of app.chatMessages(); track $index) {
+            <div
+              class="flex gap-2 items-end"
+              [ngClass]="{
+                'justify-end': message.type === 'me',
+                'justify-start': message.type === 'other',
+              }"
+            >
+              @if (message.type === "other") {
+                <div
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0"
+                  [style.background]="stringToColor(message.user.userName)"
+                >
+                  {{ message.user.userName[0] | uppercase }}
+                </div>
+              }
+
+              <div class="flex flex-col max-w-[75%]">
+                @if (message.type === "other") {
+                  <span class="text-xs text-[var(--text-muted)] mb-1 px-1">
+                    {{ message.user.userName }}
+                  </span>
+                }
+
+                <div
+                  class="px-4 py-2 rounded-2xl text-sm break-words"
+                  [ngClass]="{
+                    'bg-[var(--brand)] text-white rounded-br-sm':
+                      message.type === 'me',
+                    'bg-[var(--bg-surface)] text-[var(--text-primary)] rounded-bl-sm':
+                      message.type === 'other',
+                  }"
+                >
+                  {{ message.message }}
+                </div>
+              </div>
+              @if (message.type === "me") {
+                <div
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0"
+                  [style.background]="color"
+                >
+                  {{ app.userName()[0] | uppercase }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="border-t border-[var(--stroke)] p-3 shrink-0">
+          <div class="flex items-center gap-2">
+            <input
+              [(ngModel)]="message"
+              (keydown)="handleKeyDown($event)"
+              class="app-input flex-1"
+              type="text"
+              [placeholder]="i18n.t('call.chatPlaceholder')"
+            />
+
+            <button
+              (click)="handleSendMessage()"
+              class="flex items-center justify-center rounded-xl px-4 py-2 bg-[var(--brand)] text-white hover:opacity-90 transition"
+              [attr.aria-label]="i18n.t('call.sendAria')"
+            >
+              <lucide-icon [img]="SendIcon" />
             </button>
           </div>
         </div>
@@ -182,7 +450,7 @@
       class="glass-card flex items-center justify-center gap-2 overflow-x-auto px-2 py-2 md:gap-3 md:px-4 md:py-3"
     >
       <button
-        (click)="isMuted = !isMuted"
+        (click)="toggleMute()"
         [class]="
           isMuted
             ? 'bg-red-600 hover:bg-red-700'
@@ -229,7 +497,7 @@
       </button>
 
       <button
-        (click)="isVideoOff = !isVideoOff"
+        (click)="toggleVideo()"
         [class]="
           isVideoOff
             ? 'bg-red-600 hover:bg-red-700'

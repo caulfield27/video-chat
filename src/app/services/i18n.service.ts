@@ -65,7 +65,8 @@ type TranslationKey =
   | 'call.localStatus.mutedVideoOff'
   | 'call.localStatus.muted'
   | 'call.localStatus.videoOff'
-  | 'call.localStatus.live';
+  | 'call.localStatus.live'
+  | 'call.duration';
 
 const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
   ru: {
@@ -76,7 +77,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.badge': 'P2P-встреча в реальном времени',
     'menu.heroTitle1': 'Встречайтесь быстро.',
     'menu.heroTitle2': 'Решайте быстрее.',
-    'menu.description': 'Безопасные видеозвонки в браузере с быстрым доступом по коду комнаты и удобным управлением.',
+    'menu.description':
+      'Безопасные видеозвонки в браузере с быстрым доступом по коду комнаты и удобным управлением.',
     'menu.point1': 'Без установки приложений',
     'menu.point2': 'Вход в комнату в один клик',
     'menu.point3': 'Минимальный интерфейс в звонке',
@@ -84,7 +86,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.subheading': 'Выберите удобный способ подключения.',
     'menu.create': 'Создать комнату',
     'menu.join': 'Войти по коду комнаты',
-    'menu.tip': 'Для лучшего качества используйте наушники и разрешите доступ к камере и микрофону.',
+    'menu.tip':
+      'Для лучшего качества используйте наушники и разрешите доступ к камере и микрофону.',
     'common.back': 'Назад',
     'create.title': 'Создать комнату',
     'create.subtitle': 'Укажите параметры комнаты и начните звонок.',
@@ -103,7 +106,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'join.roomCodePlaceholder': 'Вставьте код комнаты',
     'join.joining': 'Подключаемся...',
     'join.submit': 'Войти в комнату',
-    'join.tip': 'Код комнаты чувствителен к символам. Лучше вставлять его целиком.',
+    'join.tip':
+      'Код комнаты чувствителен к символам. Лучше вставлять его целиком.',
     'call.appName': 'Комната',
     'call.room': 'Код комнаты',
     'call.participant.one': 'участник',
@@ -111,11 +115,13 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'call.cameraOff': 'Камера выключена',
     'call.you': 'Вы',
     'call.guest': 'Гость',
-    'call.quickTip': 'Совет: в большинстве приложений пробел временно включает микрофон.',
+    'call.quickTip':
+      'Совет: в большинстве приложений пробел временно включает микрофон.',
     'call.chatTitle': 'Чат встречи',
     'call.chatCloseAria': 'Закрыть панель чата',
     'call.chatMsg1': 'Добро пожаловать в комнату. Пишите коротко и по делу.',
-    'call.chatMsg2': 'Отключайте микрофон, когда не говорите, чтобы снизить шум.',
+    'call.chatMsg2':
+      'Отключайте микрофон, когда не говорите, чтобы снизить шум.',
     'call.chatPlaceholder': 'Введите сообщение',
     'call.send': 'Отправить',
     'call.sendAria': 'Отправить сообщение',
@@ -132,6 +138,7 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'call.localStatus.muted': 'Микрофон выключен',
     'call.localStatus.videoOff': 'Камера выключена',
     'call.localStatus.live': 'В эфире',
+    'call.duration': 'Продолжительность',
   },
   en: {
     'lang.label': 'Language',
@@ -141,7 +148,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.badge': 'Real-time P2P meeting',
     'menu.heroTitle1': 'Meet fast.',
     'menu.heroTitle2': 'Ship decisions faster.',
-    'menu.description': 'Secure browser-based video calls with instant room sharing and focused controls.',
+    'menu.description':
+      'Secure browser-based video calls with instant room sharing and focused controls.',
     'menu.point1': 'No installs required',
     'menu.point2': 'Single-click room access',
     'menu.point3': 'Minimal UI during calls',
@@ -149,7 +157,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.subheading': 'Pick the fastest way to connect.',
     'menu.create': 'Create room',
     'menu.join': 'Join with room code',
-    'menu.tip': 'Best results: use a headset and allow microphone/camera access.',
+    'menu.tip':
+      'Best results: use a headset and allow microphone/camera access.',
     'common.back': 'Back',
     'create.title': 'Create room',
     'create.subtitle': 'Set up your room details and start the call.',
@@ -168,7 +177,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'join.roomCodePlaceholder': 'Paste room code',
     'join.joining': 'Joining...',
     'join.submit': 'Join room',
-    'join.tip': 'Room codes are case-sensitive. Copy and paste to avoid mistakes.',
+    'join.tip':
+      'Room codes are case-sensitive. Copy and paste to avoid mistakes.',
     'call.appName': 'Room',
     'call.room': "Room's cod",
     'call.participant.one': 'participant',
@@ -197,6 +207,7 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'call.localStatus.muted': 'Muted',
     'call.localStatus.videoOff': 'Camera off',
     'call.localStatus.live': 'Live',
+    'call.duration': 'Duration',
   },
   tj: {
     'lang.label': 'Забон',
@@ -206,7 +217,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.badge': 'Мулоқоти P2P дар вақти воқеӣ',
     'menu.heroTitle1': 'Зуд вохӯрӣ кунед.',
     'menu.heroTitle2': 'Қарорҳоро зудтар қабул кунед.',
-    'menu.description': 'Зангҳои видеоии бехатар дар браузер бо пайвастшавии зуд аз рӯи рамзи ҳуҷра.',
+    'menu.description':
+      'Зангҳои видеоии бехатар дар браузер бо пайвастшавии зуд аз рӯи рамзи ҳуҷра.',
     'menu.point1': 'Бе насби барнома',
     'menu.point2': 'Воридшавӣ ба ҳуҷра бо як клик',
     'menu.point3': 'Интерфейси оддӣ ҳангоми занг',
@@ -214,7 +226,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'menu.subheading': 'Роҳи қулайи пайвастшавиро интихоб кунед.',
     'menu.create': 'Эҷоди ҳуҷра',
     'menu.join': 'Ворид шудан бо рамз',
-    'menu.tip': 'Барои сифати беҳтар аз гӯшмонак истифода баред ва дастрасии камера/микрофонро иҷозат диҳед.',
+    'menu.tip':
+      'Барои сифати беҳтар аз гӯшмонак истифода баред ва дастрасии камера/микрофонро иҷозат диҳед.',
     'common.back': 'Бозгашт',
     'create.title': 'Эҷоди ҳуҷра',
     'create.subtitle': 'Маълумоти ҳуҷраро ворид кунед ва зангро оғоз намоед.',
@@ -233,7 +246,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'join.roomCodePlaceholder': 'Рамзи ҳуҷраро гузоред',
     'join.joining': 'Пайваст шуда истодааст...',
     'join.submit': 'Ворид шудан',
-    'join.tip': 'Рамз ба ҳарфҳо ҳассос аст. Беҳтар аст рамзро нусхабардорӣ кунед.',
+    'join.tip':
+      'Рамз ба ҳарфҳо ҳассос аст. Беҳтар аст рамзро нусхабардорӣ кунед.',
     'call.appName': 'Ҳуҷра',
     'call.room': 'Коди ҳуҷра',
     'call.participant.one': 'иштирокчӣ',
@@ -241,7 +255,8 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'call.cameraOff': 'Камера хомӯш аст',
     'call.you': 'Шумо',
     'call.guest': 'Меҳмон',
-    'call.quickTip': 'Маслиҳат: дар бисёр барномаҳо тугмаи Space микрофонро муваққатан фаъол мекунад.',
+    'call.quickTip':
+      'Маслиҳат: дар бисёр барномаҳо тугмаи Space микрофонро муваққатан фаъол мекунад.',
     'call.chatTitle': 'Чати мулоқот',
     'call.chatCloseAria': 'Пӯшидани панели чат',
     'call.chatMsg1': 'Ба ҳуҷра хуш омадед. Паёмҳоро кӯтоҳ ва равшан нависед.',
@@ -262,6 +277,7 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'call.localStatus.muted': 'Садо хомӯш',
     'call.localStatus.videoOff': 'Камера хомӯш',
     'call.localStatus.live': 'Дар эфир',
+    'call.duration': 'Давомнокӣ',
   },
 };
 

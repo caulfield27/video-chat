@@ -5,17 +5,25 @@ export interface IMessage {
     | 'ice-candidate'
     | 'joined'
     | 'self-joined'
-    | 'joined-metadata';
+    | 'joined-metadata'
+    | 'disconnected'
+    | 'toggle-mute'
+    | 'toggle-video-off'
+    | 'chat-message';
   roomId?: string | null;
   roomName?: string;
   userName?: string;
   streamId?: string;
-  clients?: {
-    streamId: string;
-    userName: string;
-    socket: WebSocket;
-  }[];
+  message?: string;
+  client: IClient;
+  clients?: IClient[];
   data: unknown;
+}
+
+interface IClient {
+  streamId: string;
+  userName: string;
+  socket?: WebSocket;
 }
 
 export interface IRemoteUser {
@@ -25,4 +33,10 @@ export interface IRemoteUser {
   isVideoOff: boolean;
   stream: MediaStream | null;
   color: string;
+}
+
+export interface IChatMessage {
+  message: string;
+  type: 'me' | 'other';
+  user: Omit<IClient, 'socket'>;
 }

@@ -11,13 +11,18 @@ import { AppService } from '../../services/app.service';
 import { WebRtcService } from '@/shared/services/webRtc.service';
 import { I18nService } from '../../services/i18n.service';
 import { WebsocketService } from '@/shared/services/websocket.service';
+import { LucideAngularModule, MicOff, SendHorizontal } from 'lucide-angular';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-call',
   templateUrl: './call.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule],
 })
 export class CallComponent implements AfterViewInit, OnDestroy {
+  readonly MicOffIcon = MicOff;
+  readonly SendIcon = SendHorizontal;
+
   isMuted = false;
   isVideoOff = false;
   isScreenSharing = false;
@@ -33,6 +38,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   public color = 'black';
   public isCodHidden: boolean = true;
   public isCopied: boolean = false;
+  public message: string = '';
 
   constructor(
     public app: AppService,
@@ -86,6 +92,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
       window.onbeforeunload = () => {
         this.ws.close(1000, this.app.roomId() ?? '');
+        this.app.reset();
       };
     } catch (e) {
       console.error(e);
@@ -102,6 +109,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     }
 
     this.ws.close(1000, this.app.roomId() ?? '');
+    this.app.reset();
     window.onbeforeunload = null;
   }
 
@@ -114,6 +122,47 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.stream?.getAudioTracks().forEach((track) => {
       track.enabled = !this.isMuted;
     });
+    this.ws.send({
+      type: 'toggle-mute',
+      roomId: this.app.roomId(),
+      streamId: this.app.streamId,
+    });
+  }
+
+  handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      this.handleSendMessage();
+    }
+  }
+
+  stringToColor(name: string) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 60%, 50%)`;
+  }
+
+  handleSendMessage() {
+    const user = {
+      streamId: this.app.streamId,
+      userName: this.app.userName(),
+    };
+    this.app.chatMessages.update((prev) => [
+      ...prev,
+      {
+        type: 'me',
+        message: this.message,
+        user,
+      },
+    ]);
+    this.ws.send({
+      type: 'chat-message',
+      roomId: this.app.roomId(),
+      message: this.message,
+      user,
+    });
+    this.message = '';
   }
 
   handleCopy() {
@@ -130,6 +179,11 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.isVideoOff = !this.isVideoOff;
     this.stream?.getVideoTracks().forEach((track) => {
       track.enabled = !this.isVideoOff;
+    });
+    this.ws.send({
+      type: 'toggle-video-off',
+      roomId: this.app.roomId(),
+      streamId: this.app.streamId,
     });
   }
 
