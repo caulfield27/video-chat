@@ -7,5 +7,5 @@ export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
 };
 
-export const SIGNALING_SERVICE_URL = 'wss://webrtc-signaling-service-production.up.railway.app/';
-// export const SIGNALING_SERVICE_URL = 'ws://localhost:3000';
+// export const SIGNALING_SERVICE_URL = 'wss://webrtc-signaling-service-production.up.railway.app/';
+export const SIGNALING_SERVICE_URL = 'ws://localhost:3000';

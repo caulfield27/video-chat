@@ -1,0 +1,79 @@
+<aside
+  class="bg-[var(--bg-primary)] glass-card flex h-[60vh] flex-col overflow-hidden max-lg:fixed max-lg:inset-0 max-lg:w-screen max-lg:h-screen max-lg:rounded-none z-10"
+>
+  <!-- Header -->
+  <div
+    class="flex items-center justify-between border-b border-[var(--stroke)] max-lg:border-none px-4 py-3 shrink-0"
+  >
+    <h2 class="font-semibold">{{ i18n.t("call.chatTitle") }}</h2>
+    <button
+      (click)="app.toggleChat()"
+      class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--hover-surface)]"
+      [attr.aria-label]="i18n.t('call.chatCloseAria')"
+    >
+      ✕
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+    @for (message of app.chatMessages(); track $index) {
+      <div
+        class="flex gap-2 items-end"
+        [ngClass]="{
+          'justify-end': message.type === 'me',
+          'justify-start': message.type === 'other',
+        }"
+      >
+        @if (message.type === "other") {
+          <div
+            class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0"
+            [style.background]="stringToColor(message.user.userName)"
+          >
+            {{ message.user.userName[0]?.toLocaleUpperCase() ?? "" }}
+          </div>
+        }
+
+        <div class="flex flex-col max-w-[75%]">
+          @if (message.type === "other") {
+            <span class="text-xs text-[var(--text-muted)] mb-1 px-1">
+              {{ message.user.userName }}
+            </span>
+          }
+
+          <div
+            class="px-4 py-2 rounded-2xl text-sm break-words"
+            [ngClass]="{
+              'bg-[var(--brand)] text-white rounded-br-sm':
+                message.type === 'me',
+              'bg-[var(--bg-surface)] text-[var(--text-primary)] rounded-bl-sm':
+                message.type === 'other',
+            }"
+          >
+            {{ message.message }}
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="border-t border-[var(--stroke)] p-3 shrink-0">
+    <div class="flex items-center gap-2">
+      <input
+        [(ngModel)]="message"
+        (keydown)="handleKeyDown($event)"
+        class="app-input flex-1"
+        type="text"
+        [placeholder]="i18n.t('call.chatPlaceholder')"
+      />
+
+      <button
+        (click)="handleSendMessage()"
+        class="flex items-center justify-center rounded-xl px-4 py-2 bg-[var(--brand)] text-white hover:opacity-90 transition"
+        [attr.aria-label]="i18n.t('call.sendAria')"
+      >
+        <lucide-icon [img]="SendIcon" />
+      </button>
+    </div>
+  </div>
+</aside>

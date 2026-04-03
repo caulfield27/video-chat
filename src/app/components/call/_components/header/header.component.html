@@ -1,0 +1,466 @@
+<header class="glass-card">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+    <!-- Desktop Layout -->
+    <div class="hidden md:flex items-center justify-between h-20 gap-4">
+      <!-- Left Section: Room Info -->
+      <div class="flex items-center gap-4 lg:gap-6 min-w-0">
+        <!-- Room Name -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg"
+          >
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+            >
+              {{ i18n.t("call.appName") }}
+            </p>
+            <h1
+              class="text-lg font-semibold text-[var(--text-primary)] leading-tight"
+            >
+              {{ app.roomName() }}
+            </h1>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="h-12 w-px bg-[var(--stroke)]"></div>
+
+        <!-- Room Code -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="min-w-0">
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider mb-1"
+            >
+              {{ i18n.t("call.room") }}
+            </p>
+            <div class="flex items-center gap-2">
+              <code
+                class="text-sm font-mono font-semibold text-[var(--brand)] bg-[--bg-surface] px-3 py-1 rounded-md border border-[var(--stroke)]"
+              >
+                {{ isCodHidden ? "••••••" : app.roomId() }}
+              </code>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center gap-1 flex-shrink-0">
+                <!-- Toggle Visibility -->
+                <button
+                  (click)="isCodHidden = !isCodHidden"
+                  class="p-2 text-[var(--text-muted)] hover:bg-[--bg-surface] rounded-lg transition-all duration-200"
+                  [title]="isCodHidden! ? 'Hide code' : 'Show code'"
+                >
+                  <svg
+                    *ngIf="isCodHidden"
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  <svg
+                    *ngIf="!isCodHidden"
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="handleCopy()"
+                  class="p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-all duration-200 relative group"
+                  title="Copy room code"
+                >
+                  <svg
+                    *ngIf="!isCopied"
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <svg
+                    *ngIf="isCopied"
+                    class="w-4 h-4 text-emerald-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Section: Participants & Timer -->
+      <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
+        <!-- Participants Count -->
+        <div
+          class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+        >
+          <div class="relative flex-shrink-0">
+            <div
+              class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </div>
+            <!-- Active indicator -->
+            <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
+              ></span>
+            </span>
+          </div>
+          <div>
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+            >
+              {{ participantsLabel }}
+            </p>
+            <p
+              class="text-lg font-bold text-[var(--text-primary)] leading-tight"
+            >
+              {{ participantsCount }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="h-12 w-px bg-[var(--stroke)]"></div>
+
+        <!-- Call Duration Timer -->
+        <div
+          class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+        >
+          <div
+            class="w-9 h-9 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg relative"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <!-- Recording pulse indicator -->
+            <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"
+              ></span>
+            </span>
+          </div>
+          <div>
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+            >
+              {{ i18n.t("call.duration") }}
+            </p>
+            <p
+              class="text-lg font-mono font-bold text-[var(--text-primary)] leading-tight tabular-nums"
+            >
+              {{ callDuration() }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="md:hidden space-y-3 py-3">
+      <!-- Row 1: Room Name -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0"
+        >
+          <svg
+            class="w-5 h-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p
+            class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+          >
+            {{ i18n.t("call.appName") }}
+          </p>
+          <h1
+            class="text-base font-semibold text-[var(--text-primary)] leading-tight truncate"
+          >
+            {{ app.roomName() }}
+          </h1>
+        </div>
+      </div>
+
+      <!-- Row 2: Room Code -->
+      <div class="flex items-center gap-2">
+        <div class="min-w-0 flex-1">
+          <p
+            class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider mb-1.5"
+          >
+            {{ i18n.t("call.room") }}
+          </p>
+          <div class="flex items-center gap-2">
+            <code
+              class="text-xs font-mono font-semibold text-[var(--brand)] bg-[--bg-surface] px-2.5 py-1.5 rounded-md border border-[var(--stroke)] flex-1 truncate"
+            >
+              {{ isCodHidden ? "••••••" : app.roomId() }}
+            </code>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <!-- Toggle Visibility -->
+              <button
+                (click)="isCodHidden = !isCodHidden"
+                class="p-1.5 text-[var(--text-muted)] hover:bg-[--bg-surface] rounded-lg transition-all duration-200"
+                [title]="isCodHidden! ? 'Hide code' : 'Show code'"
+              >
+                <svg
+                  *ngIf="isCodHidden"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                <svg
+                  *ngIf="!isCodHidden"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                  />
+                </svg>
+              </button>
+
+              <!-- Copy Button -->
+              <button
+                (click)="handleCopy()"
+                class="p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-all duration-200"
+                title="Copy room code"
+              >
+                <svg
+                  *ngIf="!isCopied"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                <svg
+                  *ngIf="isCopied"
+                  class="w-4 h-4 text-emerald-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Participants & Duration -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Participants Count -->
+        <div
+          class="flex items-center gap-2 bg-[var(--bg-surface)] px-3 py-2 rounded-lg border border-[var(--stroke)]"
+        >
+          <div class="relative flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg"
+            >
+              <svg
+                class="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+            </div>
+            <!-- Active indicator -->
+            <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-slate-900"
+              ></span>
+            </span>
+          </div>
+          <div class="min-w-0">
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
+            >
+              {{ participantsLabel }}
+            </p>
+            <p
+              class="text-base font-bold text-[var(--text-primary)] leading-tight"
+            >
+              {{ participantsCount }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Call Duration Timer -->
+        <div
+          class="flex items-center gap-2 bg-[var(--bg-surface)] px-3 py-2 rounded-lg border border-[var(--stroke)]"
+        >
+          <div
+            class="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg relative flex-shrink-0"
+          >
+            <svg
+              class="w-4 h-4 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <!-- Recording pulse indicator -->
+            <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"
+              ></span>
+            </span>
+          </div>
+          <div class="min-w-0">
+            <p
+              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider break-all"
+            >
+              {{ i18n.t("call.duration") }}
+            </p>
+            <p
+              class="text-lg font-mono font-bold text-[var(--text-primary)] leading-tight tabular-nums"
+            >
+              {{ callDuration() }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

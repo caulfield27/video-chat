@@ -1,5 +1,4 @@
 import { AppService } from '@/app/services/app.service';
-import { WebRtcService } from '@/shared/services/webRtc.service';
 import { WebsocketService } from '@/shared/services/websocket.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -21,7 +20,6 @@ export class JoinRoomComponent {
   constructor(
     private ws: WebsocketService,
     private app: AppService,
-    private rtc: WebRtcService,
     public i18n: I18nService,
   ) {}
 
@@ -36,14 +34,13 @@ export class JoinRoomComponent {
       await this.ws.connect(SIGNALING_SERVICE_URL, (data) =>
         this.app.onWsMessage(data),
       );
-      await this.rtc.connect();
-
       const roomId = this.roomCode.trim();
       this.app.roomId.set(roomId || null);
-
+      this.app.userName.set(this.userName);
+      this.app.currentView.set('call');
       this.ws.send({
         type: 'joinRoom',
-        roomId
+        roomId,
       });
     } catch (e) {
       console.error(e);

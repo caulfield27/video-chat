@@ -6,6 +6,10 @@ import { WebRtcService } from '@/shared/services/webRtc.service';
   providedIn: 'root',
 })
 export class AppService {
+  stream = signal<MediaStream | null>(null);
+  isMuted = signal<boolean>(false);
+  isVideoOff = signal<boolean>(false);
+  isScreenSharing = signal<boolean>(false);
   currentView = signal<'menu' | 'create' | 'join' | 'call'>('menu');
   roomId = signal<string | null>(null);
   roomName = signal('');
@@ -13,6 +17,9 @@ export class AppService {
   streamId: string = '';
   remoteUsers = signal<IRemoteUser[]>([]);
   chatMessages = signal<IChatMessage[]>([]);
+  nots = signal<number>(0);
+  msgAudio = new Audio('/audio/message.wav');
+  isChatOpen = signal<boolean>(false);
   readonly colors: Record<number, string> = {
     1: '#0f172a',
     2: '#dc2626',
@@ -48,37 +55,30 @@ export class AppService {
   }
 
   private async handleSignal(signal: IMessage) {
-    const { type, data } = signal;
+    const { type, data, streamId } = signal;
+    const id = streamId!;
 
     switch (type) {
       case 'offer':
         await this.rtc.handleOffer(
           data as RTCSessionDescriptionInit,
           this.roomId(),
+          id,
         );
         break;
       case 'answer':
         await this.rtc.handleRemoteDescription(
           data as RTCSessionDescriptionInit,
+          id,
         );
         break;
       case 'ice-candidate':
-        await this.rtc.addCandidate(data as RTCIceCandidateInit);
+        await this.rtc.addCandidate(data as RTCIceCandidateInit, id);
         break;
-      case 'joined':
-        await this.rtc.createOffer(this.roomId());
-        break;
-    }
-  }
-
-  async onWsMessage(event: MessageEvent<unknown>) {
-    try {
-      const parsed = JSON.parse(event.data as string) as IMessage;
-
-      if (parsed.type === 'self-joined') {
+      case 'self-joined':
         this.remoteUsers.update((prev) => [
           ...prev,
-          ...parsed.clients!.map((c) => ({
+          ...signal.clients!.map((c) => ({
             streamId: c.streamId,
             userName: c.userName,
             isMuted: false,
@@ -87,11 +87,41 @@ export class AppService {
             color: this.randomColor,
           })),
         ]);
-        this.roomName.set(parsed.roomName!);
-        this.roomId.set(parsed.roomId ?? null);
-        this.currentView.set('call');
+
+        this.remoteUsers().forEach(async (user) => {
+          await this.rtc.connect(
+            user.streamId,
+            this.stream()!,
+            this.trackListener,
+            this.roomId(),
+          );
+        });
+        this.roomName.set(signal.roomName!);
+        this.roomId.set(signal.roomId ?? null);
         return;
-      } else if (parsed.type === 'joined-metadata') {
+    }
+  }
+
+  trackListener(event: RTCTrackEvent) {
+    const remoteStream = event.streams[0];
+    if (!remoteStream) return;
+    const alreadyExists = this.remoteUsers().some(
+      (user) => user.stream?.id === remoteStream.id,
+    );
+    if (!alreadyExists) {
+      this.remoteUsers.update((prev) =>
+        prev.map((u) =>
+          u.streamId === remoteStream.id ? { ...u, stream: remoteStream } : u,
+        ),
+      );
+    }
+  }
+
+  async onWsMessage(event: MessageEvent<unknown>) {
+    try {
+      const parsed = JSON.parse(event.data as string) as IMessage;
+
+      if (parsed.type === 'joined-metadata') {
         this.remoteUsers.update((prev) => [
           ...prev,
           {
@@ -103,6 +133,13 @@ export class AppService {
             color: this.randomColor,
           },
         ]);
+        await this.rtc.connect(
+          parsed.streamId!,
+          this.stream()!,
+          this.trackListener,
+          this.roomId(),
+        );
+        await this.rtc.createOffer(this.roomId(), parsed.streamId!);
       } else if (parsed.type === 'disconnected') {
         this.remoteUsers.update((prev) =>
           prev.filter((u) => u.streamId !== parsed.streamId),
@@ -132,6 +169,11 @@ export class AppService {
           }),
         );
       } else if (parsed.type === 'chat-message') {
+        if (!this.isChatOpen()) {
+          this.nots.update((prev) => prev + 1);
+          this.msgAudio.play();
+        }
+
         this.chatMessages.update((prev) => [
           ...prev,
           {
@@ -146,7 +188,7 @@ export class AppService {
         parsed.type === 'offer' ||
         parsed.type === 'answer' ||
         parsed.type === 'ice-candidate' ||
-        parsed.type === 'joined'
+        parsed.type === 'self-joined'
       ) {
         if (!this.signalingReady) {
           this.pendingSignals.push(parsed);
@@ -164,6 +206,10 @@ export class AppService {
     return this.colors[Math.round(Math.random() * 5)];
   }
 
+  toggleChat() {
+    this.isChatOpen.update((prev) => !prev);
+  }
+
   reset() {
     this.currentView.set('menu');
     this.roomId.set(null);
@@ -171,6 +217,9 @@ export class AppService {
     this.userName.set('');
     this.streamId = '';
     this.remoteUsers.set([]);
+    this.chatMessages.set([]);
+    this.nots.set(0);
+    this.isChatOpen.set(false);
     this.signalingReady = false;
     this.pendingSignals = [];
   }

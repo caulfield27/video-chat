@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AppService } from '../../services/app.service';
 import { WebsocketService } from '../../../shared/services/websocket.service';
 import { v4 as uuidv4 } from 'uuid';
-import { WebRtcService } from '@/shared/services/webRtc.service';
 import { I18nService } from '../../services/i18n.service';
 import { SIGNALING_SERVICE_URL } from '@/app/app.config';
 
@@ -22,7 +21,6 @@ export class CreateRoomComponent {
   constructor(
     private app: AppService,
     private ws: WebsocketService,
-    private rtc: WebRtcService,
     public i18n: I18nService,
   ) {}
 
@@ -39,7 +37,6 @@ export class CreateRoomComponent {
       await this.ws.connect(SIGNALING_SERVICE_URL, (data) =>
         this.app.onWsMessage(data),
       );
-      await this.rtc.connect();
       const roomId = uuidv4();
       this.app.roomId.set(roomId);
       this.ws.send({

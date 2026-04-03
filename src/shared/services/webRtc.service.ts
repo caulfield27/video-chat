@@ -5,34 +5,57 @@ import { WebsocketService } from './websocket.service';
   providedIn: 'root',
 })
 export class WebRtcService {
-  private pc: RTCPeerConnection | null = null;
-  public iceCandidatesQueue: RTCIceCandidateInit[] = [];
+  public peers = new Map<
+    string,
+    {
+      pc: RTCPeerConnection;
+      iceCandidatesQueue: RTCIceCandidateInit[];
+    }
+  >();
 
   constructor(private ws: WebsocketService) {}
 
-  async connect() {
+  async connect(
+    id: string,
+    stream: MediaStream,
+    trackListener: (ev: RTCTrackEvent) => void,
+    roomId: string | null,
+  ) {
     try {
-      this.pc = new RTCPeerConnection({
+      const pc = new RTCPeerConnection({
         iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
       });
+      this.peers.set(id, {
+        pc,
+        iceCandidatesQueue: [],
+      });
+      this.addTracks(stream, stream.id);
+      this.addTrackListener(trackListener, id);
+      this.listenCandidates(roomId, id);
+      console.log('peers: ', this.peers);
+      
     } catch (e) {
       console.error('create peer connection error:', e);
     }
   }
 
-  addTracks(stream: MediaStream) {
+  addTracks(stream: MediaStream, id: string) {
+    const peer = this.peers.get(id);
+    if (!peer) return;
     stream.getTracks().forEach((track) => {
-      this.pc?.addTrack(track, stream);
+      peer.pc.addTrack(track, stream);
     });
   }
 
-  async createOffer(roomId: string | null) {
-    if (!this.pc || !roomId) return;
+  async createOffer(roomId: string | null, peerId: string) {
+    const peer = this.peers.get(peerId);
+    if (!peer || !roomId) return;
     try {
-      const offer = await this.pc.createOffer();
-      await this.pc.setLocalDescription(offer);
+      const offer = await peer.pc.createOffer();
+      await peer.pc.setLocalDescription(offer);
       this.ws.send({
         roomId,
+        streamId: peerId,
         type: 'offer',
         data: offer,
       });
@@ -41,68 +64,91 @@ export class WebRtcService {
     }
   }
 
-  async handleOffer(offer: RTCSessionDescriptionInit, roomId: string | null) {
-    if (!this.pc || !roomId) return;
+  async handleOffer(
+    offer: RTCSessionDescriptionInit,
+    roomId: string | null,
+    peerId: string,
+  ) {
+    const peer = this.peers.get(peerId);
+    console.log('case 1: ', peerId, roomId);
+    
+    if (!peer || !roomId) return;
     try {
-      await this.pc.setRemoteDescription(offer);
-      const answer = await this.pc.createAnswer();
-      await this.pc.setLocalDescription(answer);
+      await peer.pc.setRemoteDescription(offer);
+      const answer = await peer.pc.createAnswer();
+      await peer.pc.setLocalDescription(answer);
+      
       this.ws.send({
         roomId,
+        streamId: peerId,
         type: 'answer',
         data: answer,
       });
-      await this.flushPendingCandidates();
+      await this.flushPendingCandidates(peerId);
     } catch (e) {
       console.error('[rtc] handleOffer error:', e);
     }
   }
 
-  async handleRemoteDescription(answer: RTCSessionDescriptionInit) {
-    if (!this.pc) return;
-    await this.pc.setRemoteDescription(answer);
-    await this.flushPendingCandidates();
+  async handleRemoteDescription(
+    answer: RTCSessionDescriptionInit,
+    peerId: string,
+  ) {
+    const peer = this.peers.get(peerId);
+    if (!peer) return;
+    await peer.pc.setRemoteDescription(answer);
+    await this.flushPendingCandidates(peerId);
   }
 
-  private async flushPendingCandidates() {
-    if (!this.pc || !this.pc.remoteDescription || !this.iceCandidatesQueue.length) {
+  private async flushPendingCandidates(peerId: string) {
+    const peer = this.peers.get(peerId);
+    if (!peer) return;
+    if (
+      !peer.pc ||
+      !peer.pc.remoteDescription ||
+      !peer.iceCandidatesQueue.length
+    ) {
       return;
     }
 
-    const pending = [...this.iceCandidatesQueue];
-    this.iceCandidatesQueue = [];
+    const pending = [...peer.iceCandidatesQueue];
+    peer.iceCandidatesQueue = [];
 
     for (const candidate of pending) {
       try {
-        await this.pc.addIceCandidate(candidate);
+        await peer.pc.addIceCandidate(candidate);
       } catch (e) {
         console.error('[rtc] flush candidate error:', e);
       }
     }
   }
 
-  async addCandidate(candidate: RTCIceCandidateInit) {
-    if (!this.pc) return;
-    if (!this.pc.remoteDescription) {
-      this.iceCandidatesQueue.push(candidate);
+  async addCandidate(candidate: RTCIceCandidateInit, peerId: string) {
+    const peer = this.peers.get(peerId);
+    if (!peer) return;
+    if (!peer.pc.remoteDescription) {
+      peer.iceCandidatesQueue.push(candidate);
       return;
     }
 
-    await this.pc.addIceCandidate(candidate);
+    await peer.pc.addIceCandidate(candidate);
   }
 
-  addTrackListener(cb: (event: RTCTrackEvent) => void) {
-    if (!this.pc) return;
-    this.pc.ontrack = cb;
+  addTrackListener(cb: (event: RTCTrackEvent) => void, peerId: string) {
+    const peer = this.peers.get(peerId);
+    if (!peer) return;
+    peer.pc.ontrack = cb;
   }
 
-  listenCandidates(roomId: string | null) {
-    if (!this.pc || !roomId) return;
+  listenCandidates(roomId: string | null, peerId: string) {
+    const peer = this.peers.get(peerId);
+    if (!peer || !roomId) return;
 
-    this.pc.onicecandidate = (e) => {
+    peer.pc.onicecandidate = (e) => {
       if (e.candidate) {
         this.ws.send({
           roomId,
+          streamId: peerId,
           type: 'ice-candidate',
           data: e.candidate,
         });
