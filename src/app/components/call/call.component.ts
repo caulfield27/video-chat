@@ -4,10 +4,10 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { AppService } from '../../services/app.service';
-import { WebRtcService } from '@/shared/services/webRtc.service';
 import { I18nService } from '../../services/i18n.service';
 import { WebsocketService } from '@/shared/services/websocket.service';
 import { LucideAngularModule, MicOff } from 'lucide-angular';
@@ -17,6 +17,19 @@ import { CallFooter } from './_components/footer/footer.component';
 @Component({
   selector: 'app-call',
   templateUrl: './call.component.html',
+  styles: `
+    :host {
+      display: block;
+      min-height: 100dvh;
+      background: var(--bg-primary);
+    }
+
+    .call-chrome {
+      transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+    }
+  `,
   imports: [
     CommonModule,
     LucideAngularModule,
@@ -31,6 +44,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
 
   public color = 'black';
+  readonly mobileChromeVisible = signal(true);
 
   constructor(
     public app: AppService,
@@ -77,13 +91,26 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     window.onbeforeunload = null;
   }
 
-  get gridClass() {
-    const count = this.app.remoteUsers().length + 1;
+  get hasRemoteUsers() {
+    return this.app.remoteUsers().length > 0;
+  }
+
+  get remoteGridClass() {
+    const count = this.app.remoteUsers().length;
     if (count <= 1) return 'grid-cols-1';
     if (count === 2) return 'grid-cols-1 lg:grid-cols-2';
-    if (count <= 4) return 'grid-cols-1 sm:grid-cols-2';
-    if (count <= 6) return 'grid-cols-2 lg:grid-cols-3';
-    return 'grid-cols-2 lg:grid-cols-4';
+    if (count <= 4) return 'grid-cols-1 md:grid-cols-2';
+    if (count <= 6) return 'grid-cols-2 xl:grid-cols-3';
+    return 'grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4';
+  }
+
+  handleStageTap(event: MouseEvent) {
+    if (window.innerWidth >= 768 || this.app.isChatOpen()) return;
+
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('[data-no-stage-toggle]')) return;
+
+    this.mobileChromeVisible.update((visible) => !visible);
   }
 
   private bindLocalPreview(stream: MediaStream) {

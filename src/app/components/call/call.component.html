@@ -1,76 +1,181 @@
-﻿<div
-  class="flex min-h-screen flex-col gap-2 px-2 py-2 md:gap-4 md:px-6 md:py-4"
->
-  <call-header />
+<div class="relative flex min-h-[100dvh] flex-col md:gap-4 md:px-6 md:py-4">
+  <div class="hidden md:block">
+    <call-header />
+  </div>
+
+  <div
+    class="call-chrome pointer-events-none absolute inset-x-0 top-0 z-30 px-2 pt-2 md:hidden"
+    [ngClass]="
+      mobileChromeVisible()
+        ? 'translate-y-0 opacity-100'
+        : '-translate-y-4 opacity-0'
+    "
+  >
+    <div data-no-stage-toggle class="pointer-events-auto">
+      <call-header />
+    </div>
+  </div>
+
   <main
-    class="min-h-0 grid flex-1 gap-2 md:gap-4"
-    [ngClass]="app.isChatOpen() ? 'grid-cols-[1fr_320px]' : ''"
+    class="grid min-h-0 flex-1 md:gap-4"
+    [ngClass]="app.isChatOpen() ? 'md:grid-cols-[minmax(0,1fr)_320px]' : ''"
   >
     <section
-      class="relative h-full w-full overflow-hidden rounded-2xl bg-black p-5"
+      class="relative min-h-0 overflow-hidden bg-black md:rounded-[28px]"
+      (click)="handleStageTap($event)"
     >
-      <div class="grid h-full w-full gap-2" [ngClass]="gridClass">
-        @for (user of app.remoteUsers(); track $index) {
-          <div class="relative flex justify-end">
-            @if (user.isMuted) {
+      <div
+        class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"
+      ></div>
+
+      @if (hasRemoteUsers) {
+        <div
+          class="relative z-10 grid h-full w-full auto-rows-fr gap-2 overflow-y-auto p-2 md:gap-4 md:p-4"
+          [ngClass]="remoteGridClass"
+        >
+          @for (user of app.remoteUsers(); track user.streamId ?? $index) {
+            <div
+              class="relative min-h-[220px] overflow-hidden rounded-2xl bg-black ring-1 ring-white/10 md:min-h-[280px]"
+            >
+              @if (user.isMuted) {
+                <div
+                  class="absolute left-3 top-3 z-20 rounded-xl bg-red-700/90 p-2 text-white backdrop-blur"
+                >
+                  <lucide-icon [img]="MicOffIcon" />
+                </div>
+              }
+
+              @if (!user.stream || user.isVideoOff) {
+                <div
+                  class="flex h-full w-full items-center justify-center bg-black"
+                >
+                  <div
+                    class="flex h-24 w-24 items-center justify-center rounded-full text-white shadow-2xl md:h-32 md:w-32"
+                    [style.background]="user.color"
+                  >
+                    <span class="text-3xl font-semibold md:text-5xl">{{
+                      user.userName.toLocaleUpperCase()[0]
+                    }}</span>
+                  </div>
+                </div>
+              } @else {
+                <video
+                  [srcObject]="user.stream"
+                  autoplay
+                  playsinline
+                  class="h-full w-full object-cover"
+                ></video>
+              }
+
               <div
-                class="absolute left-5 top-5 bg-red-700 rounded-lg p-3 flex justify-center items-center"
+                class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 via-black/20 to-transparent p-3 text-white"
               >
-                <lucide-icon [img]="MicOffIcon" />
+                <div>
+                  <p class="text-sm font-medium md:text-base">
+                    {{ user.userName }}
+                  </p>
+                </div>
               </div>
-            }
-            @if (!user.stream || user.isVideoOff) {
+            </div>
+          }
+        </div>
+
+        <div
+          data-no-stage-toggle
+          class="absolute bottom-4 right-4 z-20 w-28 overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl ring-1 ring-black/30 md:bottom-6 md:right-6 md:w-40"
+        >
+          <div class="relative aspect-[3/4]">
+            @if (!app.stream() || app.isVideoOff()) {
               <div
-                class="h-full w-full rounded-xl flex justify-center items-center"
+                class="flex h-full w-full items-center justify-center bg-black"
               >
                 <div
-                  class="w-72 h-72 rounded-full text-white flex justify-center items-center"
-                  [style.background]="user.color"
+                  class="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl md:h-20 md:w-20"
+                  [style.background]="color"
                 >
-                  <span class="text-5xl font-semibold">{{
-                    user.userName.toLocaleUpperCase()[0]
+                  <span class="text-xl font-semibold md:text-3xl">{{
+                    app.userName().toLocaleUpperCase()[0]
                   }}</span>
                 </div>
               </div>
             } @else {
               <video
+                #localVideo
                 [srcObject]="app.stream()"
                 autoplay
                 playsinline
-                class="h-full w-full rounded-xl object-cover"
+                muted
+                class="h-full w-full object-cover"
               ></video>
             }
-          </div>
-        }
-        <div class="relative flex justify-center">
-          @if (!app.stream() || app.isVideoOff()) {
+
             <div
-              class="h-full w-full rounded-xl flex justify-center items-center"
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-2 text-xs font-medium text-white"
             >
-              <div
-                class="w-72 h-72 rounded-full text-white flex justify-center items-center"
-                [style.background]="color"
-              >
-                <span class="text-5xl font-semibold">{{
-                  app.userName().toLocaleUpperCase()[0]
-                }}</span>
-              </div>
+              {{ app.userName() }} ({{ i18n.t("call.you") }})
             </div>
-          } @else {
-            <video
-              [srcObject]="app.stream()"
-              autoplay
-              playsinline
-              class="h-full w-full rounded-xl object-cover"
-            ></video>
-          }
+          </div>
         </div>
-      </div>
+      } @else {
+        <div class="relative z-10 h-full w-full p-2 md:p-4">
+          <div
+            class="relative flex h-full w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10"
+          >
+            @if (!app.stream() || app.isVideoOff()) {
+              <div
+                class="flex h-full w-full items-center justify-center bg-black"
+              >
+                <div
+                  class="flex h-28 w-28 items-center justify-center rounded-full text-white shadow-2xl md:h-40 md:w-40"
+                  [style.background]="color"
+                >
+                  <span class="text-4xl font-semibold md:text-6xl">{{
+                    app.userName().toLocaleUpperCase()[0]
+                  }}</span>
+                </div>
+              </div>
+            } @else {
+              <video
+                #localVideo
+                [srcObject]="app.stream()"
+                autoplay
+                playsinline
+                muted
+                class="h-full w-full object-cover"
+              ></video>
+            }
+
+            <div
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-4 text-white"
+            >
+              <p class="text-sm font-medium md:text-base">
+                {{ app.userName() }} (You)
+              </p>
+            </div>
+          </div>
+        </div>
+      }
     </section>
 
     @if (app.isChatOpen()) {
       <call-chat />
     }
   </main>
-  <call-footer />
+
+  <div class="hidden md:block">
+    <call-footer />
+  </div>
+
+  <div
+    class="call-chrome pointer-events-none absolute inset-x-0 bottom-0 z-30 px-2 pb-2 md:hidden"
+    [ngClass]="
+      mobileChromeVisible()
+        ? 'translate-y-0 opacity-100'
+        : 'translate-y-4 opacity-0'
+    "
+  >
+    <div data-no-stage-toggle class="pointer-events-auto">
+      <call-footer />
+    </div>
+  </div>
 </div>

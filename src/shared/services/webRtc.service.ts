@@ -32,6 +32,8 @@ export class WebRtcService {
       this.addTracks(stream, id);
       this.addTrackListener(trackListener, id);
       this.listenCandidates(roomId, id, stream.id);
+      console.log('connected: ', this.peers, id);
+      
     } catch (e) {
       console.error('create peer connection error:', e);
     }
@@ -50,6 +52,8 @@ export class WebRtcService {
     if (!peer || !roomId) return;
     try {
       const offer = await peer.pc.createOffer();
+      console.log('local: ', peer.pc.localDescription);
+      
       await peer.pc.setLocalDescription(offer);
       this.ws.send({
         roomId,
@@ -71,8 +75,12 @@ export class WebRtcService {
     const peer = this.peers.get(peerId);
     if (!peer || !roomId) return;
     try {
+      console.log('remote 1: ', peer.pc.remoteDescription);
+      
       await peer.pc.setRemoteDescription(offer);
       const answer = await peer.pc.createAnswer();
+      console.log('local 1: ', peer.pc.localDescription);
+      
       await peer.pc.setLocalDescription(answer);
       
       this.ws.send({
@@ -94,6 +102,8 @@ export class WebRtcService {
     const peer = this.peers.get(peerId);
     
     if (!peer) return;
+    console.log('remote: ', peer.pc.remoteDescription);
+    
     await peer.pc.setRemoteDescription(answer);
     await this.flushPendingCandidates(peerId);
   }
