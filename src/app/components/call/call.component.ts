@@ -35,7 +35,6 @@ export class CallComponent implements AfterViewInit, OnDestroy {
   constructor(
     public app: AppService,
     public i18n: I18nService,
-    private rtc: WebRtcService,
     private ws: WebsocketService,
   ) {
     this.color = app.randomColor;
@@ -51,41 +50,13 @@ export class CallComponent implements AfterViewInit, OnDestroy {
       this.app.stream.set(stream);
       this.app.streamId = stream.id;
       this.bindLocalPreview(stream);
-      
-      // await this.rtc.connect(
-      //   stream.id,
-      //   stream,
-      //   this.app.trackListener,
-      //   this.app.roomId(),
-      // );
-
-      // this.rtc.addTracks(stream, stream.id);
       this.ws.send({
         type: 'joined-metadata',
         roomId: this.app.roomId(),
         streamId: stream.id,
         userName: this.app.userName(),
       });
-      // this.rtc.addTrackListener((event) => {
-      //   const remoteStream = event.streams[0];
-      //   if (!remoteStream) return;
-      //   const alreadyExists = this.app
-      //     .remoteUsers()
-      //     .some((user) => user.stream?.id === remoteStream.id);
-      //   if (!alreadyExists) {
-      //     this.app.remoteUsers.update((prev) =>
-      //       prev.map((u) =>
-      //         u.streamId === remoteStream.id
-      //           ? { ...u, stream: remoteStream }
-      //           : u,
-      //       ),
-      //     );
-      //   }
-      // }, stream.id);
-
-      // this.rtc.listenCandidates(this.app.roomId(), stream.id);
       this.app.markSignalingReady();
-
       window.onbeforeunload = () => {
         this.ws.close(1000, this.app.roomId() ?? '');
         this.app.reset();

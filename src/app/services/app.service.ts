@@ -64,6 +64,7 @@ export class AppService {
           data as RTCSessionDescriptionInit,
           this.roomId(),
           id,
+          this.streamId,
         );
         break;
       case 'answer':
@@ -76,6 +77,8 @@ export class AppService {
         await this.rtc.addCandidate(data as RTCIceCandidateInit, id);
         break;
       case 'self-joined':
+        this.roomName.set(signal.roomName!);
+        this.roomId.set(signal.roomId ?? null);
         this.remoteUsers.update((prev) => [
           ...prev,
           ...signal.clients!.map((c) => ({
@@ -92,12 +95,10 @@ export class AppService {
           await this.rtc.connect(
             user.streamId,
             this.stream()!,
-            this.trackListener,
+            (e) => this.trackListener(e),
             this.roomId(),
           );
         });
-        this.roomName.set(signal.roomName!);
-        this.roomId.set(signal.roomId ?? null);
         return;
     }
   }
@@ -136,10 +137,14 @@ export class AppService {
         await this.rtc.connect(
           parsed.streamId!,
           this.stream()!,
-          this.trackListener,
+          (e) => this.trackListener(e),
           this.roomId(),
         );
-        await this.rtc.createOffer(this.roomId(), parsed.streamId!);
+        await this.rtc.createOffer(
+          this.roomId(),
+          parsed.streamId!,
+          this.streamId,
+        );
       } else if (parsed.type === 'disconnected') {
         this.remoteUsers.update((prev) =>
           prev.filter((u) => u.streamId !== parsed.streamId),

@@ -29,11 +29,9 @@ export class WebRtcService {
         pc,
         iceCandidatesQueue: [],
       });
-      this.addTracks(stream, stream.id);
+      this.addTracks(stream, id);
       this.addTrackListener(trackListener, id);
-      this.listenCandidates(roomId, id);
-      console.log('peers: ', this.peers);
-      
+      this.listenCandidates(roomId, id, stream.id);
     } catch (e) {
       console.error('create peer connection error:', e);
     }
@@ -47,7 +45,7 @@ export class WebRtcService {
     });
   }
 
-  async createOffer(roomId: string | null, peerId: string) {
+  async createOffer(roomId: string | null, peerId: string, clientStreamId: string) {
     const peer = this.peers.get(peerId);
     if (!peer || !roomId) return;
     try {
@@ -55,7 +53,7 @@ export class WebRtcService {
       await peer.pc.setLocalDescription(offer);
       this.ws.send({
         roomId,
-        streamId: peerId,
+        streamId: clientStreamId,
         type: 'offer',
         data: offer,
       });
@@ -68,10 +66,9 @@ export class WebRtcService {
     offer: RTCSessionDescriptionInit,
     roomId: string | null,
     peerId: string,
+    selfId: string
   ) {
     const peer = this.peers.get(peerId);
-    console.log('case 1: ', peerId, roomId);
-    
     if (!peer || !roomId) return;
     try {
       await peer.pc.setRemoteDescription(offer);
@@ -80,7 +77,7 @@ export class WebRtcService {
       
       this.ws.send({
         roomId,
-        streamId: peerId,
+        streamId: selfId,
         type: 'answer',
         data: answer,
       });
@@ -95,6 +92,7 @@ export class WebRtcService {
     peerId: string,
   ) {
     const peer = this.peers.get(peerId);
+    
     if (!peer) return;
     await peer.pc.setRemoteDescription(answer);
     await this.flushPendingCandidates(peerId);
@@ -140,15 +138,14 @@ export class WebRtcService {
     peer.pc.ontrack = cb;
   }
 
-  listenCandidates(roomId: string | null, peerId: string) {
+  listenCandidates(roomId: string | null, peerId: string, id: string) {
     const peer = this.peers.get(peerId);
     if (!peer || !roomId) return;
-
     peer.pc.onicecandidate = (e) => {
       if (e.candidate) {
         this.ws.send({
           roomId,
-          streamId: peerId,
+          streamId: id,
           type: 'ice-candidate',
           data: e.candidate,
         });
