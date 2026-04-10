@@ -27,6 +27,10 @@ export class JoinRoomComponent {
     this.app.currentView.set('menu');
   }
 
+  get disable() {
+    return this.isJoining || !this.userName || !this.roomCode;
+  }
+
   async onJoin() {
     try {
       this.isJoining = true;
@@ -45,6 +49,12 @@ export class JoinRoomComponent {
     } catch (e) {
       console.error(e);
       this.isJoining = false;
+    }
+  }
+
+  onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && !this.disable) {
+      this.onJoin();
     }
   }
 }

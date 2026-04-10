@@ -28,6 +28,10 @@ export class CreateRoomComponent {
     this.app.currentView.set('menu');
   }
 
+  get disabled() {
+    return this.isCreating || !this.userName || !this.roomName;
+  }
+
   async onCreate() {
     try {
       this.isCreating = true;
@@ -49,6 +53,12 @@ export class CreateRoomComponent {
       console.error(e);
     } finally {
       this.isCreating = false;
+    }
+  }
+
+  onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && !this.disabled) {
+      this.onCreate();
     }
   }
 }

@@ -10,7 +10,7 @@ import {
 import { AppService } from '../../services/app.service';
 import { I18nService } from '../../services/i18n.service';
 import { WebsocketService } from '@/shared/services/websocket.service';
-import { LucideAngularModule, MicOff } from 'lucide-angular';
+import { LucideAngularModule, MicOff, VideoOff } from 'lucide-angular';
 import { CallChat, CallHeader } from './_components';
 import { CallFooter } from './_components/footer/footer.component';
 
@@ -40,6 +40,7 @@ import { CallFooter } from './_components/footer/footer.component';
 })
 export class CallComponent implements AfterViewInit, OnDestroy {
   readonly MicOffIcon = MicOff;
+  readonly VideoOffIcon = VideoOff;
 
   @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
 
@@ -67,7 +68,7 @@ export class CallComponent implements AfterViewInit, OnDestroy {
       this.ws.send({
         type: 'joined-metadata',
         roomId: this.app.roomId(),
-        streamId: stream.id,
+        from: stream.id,
         userName: this.app.userName(),
       });
       this.app.markSignalingReady();

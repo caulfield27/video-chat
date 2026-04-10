@@ -1,5 +1,5 @@
 <aside
-  class="bg-[var(--bg-primary)] glass-card flex h-[60vh] flex-col overflow-hidden max-lg:fixed max-lg:inset-0 max-lg:w-screen max-lg:h-screen max-lg:rounded-none z-10"
+  class="bg-[var(--bg-primary)] glass-card flex h-[60vh] flex-col overflow-hidden max-lg:fixed max-lg:inset-0 max-lg:w-screen max-lg:h-screen max-lg:rounded-none z-[99]"
 >
   <!-- Header -->
   <div
@@ -30,7 +30,7 @@
             class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0"
             [style.background]="stringToColor(message.user.userName)"
           >
-            {{ message.user.userName[0]?.toLocaleUpperCase() ?? "" }}
+            {{ message.user.userName[0].toLocaleUpperCase() || "" }}
           </div>
         }
 

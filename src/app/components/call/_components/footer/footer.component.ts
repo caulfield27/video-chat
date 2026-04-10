@@ -34,7 +34,7 @@ export class CallFooter {
     this.ws.send({
       type: 'toggle-mute',
       roomId: this.app.roomId(),
-      streamId: this.app.streamId,
+      from: this.app.streamId,
     });
   }
 
@@ -48,7 +48,7 @@ export class CallFooter {
     this.ws.send({
       type: 'toggle-video-off',
       roomId: this.app.roomId(),
-      streamId: this.app.streamId,
+      from: this.app.streamId,
     });
   }
 }

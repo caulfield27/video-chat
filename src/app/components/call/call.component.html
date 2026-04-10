@@ -21,12 +21,12 @@
     [ngClass]="app.isChatOpen() ? 'md:grid-cols-[minmax(0,1fr)_320px]' : ''"
   >
     <section
-      class="relative min-h-0 overflow-hidden bg-black md:rounded-[28px]"
+      class="relative min-h-0 overflow-hidden md:rounded-[28px]"
       (click)="handleStageTap($event)"
     >
-      <div
+      <!-- <div
         class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"
-      ></div>
+      ></div> -->
 
       @if (hasRemoteUsers) {
         <div
@@ -35,26 +35,27 @@
         >
           @for (user of app.remoteUsers(); track user.streamId ?? $index) {
             <div
-              class="relative min-h-[220px] overflow-hidden rounded-2xl bg-black ring-1 ring-white/10 md:min-h-[280px]"
+              class="relative min-h-[220px] overflow-hidden rounded-2xl bg-[var(--primary-bg)] ring-1 ring-[var(--stroke)] md:min-h-[280px]"
             >
-              @if (user.isMuted) {
+              @if (user.isMuted || user.isVideoOff) {
                 <div
-                  class="absolute left-3 top-3 z-20 rounded-xl bg-red-700/90 p-2 text-white backdrop-blur"
+                  class="absolute flex flex-row gap-2 left-3 top-3 z-20 rounded-xl bg-red-700/90 p-2 text-white backdrop-blur"
                 >
-                  <lucide-icon [img]="MicOffIcon" />
+                  <lucide-icon *ngIf="user.isMuted" [img]="MicOffIcon" />
+                  <lucide-icon *ngIf="user.isVideoOff" [img]="VideoOffIcon" />
                 </div>
               }
 
               @if (!user.stream || user.isVideoOff) {
                 <div
-                  class="flex h-full w-full items-center justify-center bg-black"
+                  class="flex h-full w-full items-center justify-center bg-[var(--primary)]"
                 >
                   <div
                     class="flex h-24 w-24 items-center justify-center rounded-full text-white shadow-2xl md:h-32 md:w-32"
                     [style.background]="user.color"
                   >
                     <span class="text-3xl font-semibold md:text-5xl">{{
-                      user.userName.toLocaleUpperCase()[0]
+                      user.userName.toLocaleUpperCase()[0] || ""
                     }}</span>
                   </div>
                 </div>
@@ -68,7 +69,7 @@
               }
 
               <div
-                class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 via-black/20 to-transparent p-3 text-white"
+                class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-surface)] to-transparent p-3 text-[var(--text-primary)]"
               >
                 <div>
                   <p class="text-sm font-medium md:text-base">
@@ -82,24 +83,25 @@
 
         <div
           data-no-stage-toggle
-          class="absolute bottom-4 right-4 z-20 w-28 overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl ring-1 ring-black/30 md:bottom-6 md:right-6 md:w-40"
+          class="absolute bottom-4 right-4 z-20 w-28 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-surface)] shadow-2xl md:bottom-6 md:right-6 md:w-40"
         >
           <div class="relative aspect-[3/4]">
             @if (!app.stream() || app.isVideoOff()) {
               <div
-                class="flex h-full w-full items-center justify-center bg-black"
+                class="flex h-full w-full items-center justify-center bg-[var-(--bg-primary)]"
               >
                 <div
-                  class="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-xl md:h-20 md:w-20"
+                  class="flex h-14 w-14 items-center justify-center rounded-full text-[var(--textprimary)] shadow-xl md:h-20 md:w-20"
                   [style.background]="color"
                 >
                   <span class="text-xl font-semibold md:text-3xl">{{
-                    app.userName().toLocaleUpperCase()[0]
+                    app.userName().toLocaleUpperCase()[0] || ""
                   }}</span>
                 </div>
               </div>
             } @else {
               <video
+                on
                 #localVideo
                 [srcObject]="app.stream()"
                 autoplay
@@ -110,7 +112,7 @@
             }
 
             <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-2 text-xs font-medium text-white"
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent p-2 text-xs font-medium text-[var(--text-primary)]"
             >
               {{ app.userName() }} ({{ i18n.t("call.you") }})
             </div>
@@ -119,18 +121,18 @@
       } @else {
         <div class="relative z-10 h-full w-full p-2 md:p-4">
           <div
-            class="relative flex h-full w-full overflow-hidden rounded-2xl bg-black ring-1 ring-white/10"
+            class="relative flex h-full w-full overflow-hidden rounded-2xl bg-[var(--bg-primary)] ring-1 ring-[var(--stroke)]"
           >
             @if (!app.stream() || app.isVideoOff()) {
               <div
-                class="flex h-full w-full items-center justify-center bg-black"
+                class="flex h-full w-full items-center justify-center bg-[var(--bg-primary)]"
               >
                 <div
-                  class="flex h-28 w-28 items-center justify-center rounded-full text-white shadow-2xl md:h-40 md:w-40"
+                  class="flex h-28 w-28 items-center justify-center rounded-full text-[var(--text-primary)] shadow-2xl md:h-40 md:w-40"
                   [style.background]="color"
                 >
                   <span class="text-4xl font-semibold md:text-6xl">{{
-                    app.userName().toLocaleUpperCase()[0]
+                    app.userName().toLocaleUpperCase()[0] || ""
                   }}</span>
                 </div>
               </div>
@@ -146,10 +148,10 @@
             }
 
             <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-4 text-white"
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent p-4 text-[var(--text-primary)]"
             >
               <p class="text-sm font-medium md:text-base">
-                {{ app.userName() }} (You)
+                {{ app.userName() }} ({{ i18n.t("call.you") }})
               </p>
             </div>
           </div>

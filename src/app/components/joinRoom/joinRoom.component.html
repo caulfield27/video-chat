@@ -4,19 +4,30 @@
       (click)="onBack()"
       class="inline-flex items-center gap-2 text-sm text-[var(--text-primary)] transition"
     >
-      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <svg
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        />
       </svg>
-      {{ i18n.t('common.back') }}
+      {{ i18n.t("common.back") }}
     </button>
 
-    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t('join.title') }}</h2>
-    <p class="mt-2 text-[var(--text-primary)]">{{ i18n.t('join.subtitle') }}</p>
+    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t("join.title") }}</h2>
+    <p class="mt-2 text-[var(--text-primary)]">{{ i18n.t("join.subtitle") }}</p>
 
     <div class="mt-8 space-y-5">
       <div>
-        <label class="field-label">{{ i18n.t('join.displayName') }}</label>
+        <label class="field-label">{{ i18n.t("join.displayName") }}</label>
         <input
+          (keydown)="onKeyDown($event)"
           [(ngModel)]="userName"
           type="text"
           [placeholder]="i18n.t('join.displayNamePlaceholder')"
@@ -25,8 +36,9 @@
       </div>
 
       <div>
-        <label class="field-label">{{ i18n.t('join.roomCode') }}</label>
+        <label class="field-label">{{ i18n.t("join.roomCode") }}</label>
         <input
+          (keydown)="onKeyDown($event)"
           [(ngModel)]="roomCode"
           type="text"
           [placeholder]="i18n.t('join.roomCodePlaceholder')"
@@ -36,18 +48,19 @@
 
       <button
         (click)="onJoin()"
-        [disabled]="isJoining || !roomCode.trim()"
+        [disabled]="disable"
+        [class]="disable ? 'disabled' : ''"
         class="app-btn-primary mt-2 w-full"
       >
         @if (isJoining) {
-          {{ i18n.t('join.joining') }}
+          {{ i18n.t("join.joining") }}
         } @else {
-          {{ i18n.t('join.submit') }}
+          {{ i18n.t("join.submit") }}
         }
       </button>
 
       <p class="text-xs text-[var(--text-muted)]">
-        {{ i18n.t('join.tip') }}
+        {{ i18n.t("join.tip") }}
       </p>
     </div>
   </section>

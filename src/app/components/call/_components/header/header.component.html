@@ -145,39 +145,19 @@
           class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
         >
           <div class="relative flex-shrink-0">
-            <div
-              class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg"
-            >
-              <svg
-                class="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
+            <div class="flex items-center justify-center">
+              <lucide-icon [img]="UsersIcon" color="#a3a3a3"></lucide-icon>
+              <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
+                ></span>
+              </span>
             </div>
-            <!-- Active indicator -->
-            <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"
-              ></span>
-            </span>
           </div>
           <div>
-            <p
-              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
-            >
-              {{ participantsLabel }}
-            </p>
             <p
               class="text-lg font-bold text-[var(--text-primary)] leading-tight"
             >
@@ -193,38 +173,10 @@
         <div
           class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
         >
-          <div
-            class="w-9 h-9 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg relative"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <!-- Recording pulse indicator -->
-            <span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"
-              ></span>
-            </span>
+          <div class="flex items-center justify-center relative">
+            <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>
           </div>
           <div>
-            <p
-              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
-            >
-              {{ i18n.t("call.duration") }}
-            </p>
             <p
               class="text-lg font-mono font-bold text-[var(--text-primary)] leading-tight tabular-nums"
             >
@@ -393,22 +345,8 @@
                 />
               </svg>
             </div>
-            <!-- Active indicator -->
-            <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-slate-900"
-              ></span>
-            </span>
           </div>
           <div class="min-w-0">
-            <p
-              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider"
-            >
-              {{ participantsLabel }}
-            </p>
             <p
               class="text-base font-bold text-[var(--text-primary)] leading-tight"
             >
@@ -421,38 +359,10 @@
         <div
           class="flex items-center gap-2 bg-[var(--bg-surface)] px-3 py-2 rounded-lg border border-[var(--stroke)]"
         >
-          <div
-            class="w-8 h-8 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg relative flex-shrink-0"
-          >
-            <svg
-              class="w-4 h-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <!-- Recording pulse indicator -->
-            <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"
-              ></span>
-            </span>
+          <div class="flex items-center justify-center relative flex-shrink-0">
+            <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>
           </div>
           <div class="min-w-0">
-            <p
-              class="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider break-all"
-            >
-              {{ i18n.t("call.duration") }}
-            </p>
             <p
               class="text-lg font-mono font-bold text-[var(--text-primary)] leading-tight tabular-nums"
             >

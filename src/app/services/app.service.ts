@@ -55,26 +55,32 @@ export class AppService {
   }
 
   private async handleSignal(signal: IMessage) {
-    const { type, data, streamId } = signal;
-    const id = streamId!;
-
+    const { type, data } = signal;
     switch (type) {
       case 'offer':
-        await this.rtc.handleOffer(
-          data as RTCSessionDescriptionInit,
-          this.roomId(),
-          id,
-          this.streamId,
-        );
+        {
+          const from = signal.from!;
+          const to = signal.to!;
+          await this.rtc.handleOffer(
+            data as RTCSessionDescriptionInit,
+            this.roomId(),
+            from,
+            to,
+          );
+        }
         break;
       case 'answer':
-        await this.rtc.handleRemoteDescription(
-          data as RTCSessionDescriptionInit,
-          id,
-        );
+        {
+          const from = signal.from!;
+          await this.rtc.handleRemoteDescription(
+            data as RTCSessionDescriptionInit,
+            from,
+          );
+        }
         break;
       case 'ice-candidate':
-        await this.rtc.addCandidate(data as RTCIceCandidateInit, id);
+        const from = signal.from!;
+        await this.rtc.addCandidate(data as RTCIceCandidateInit, from);
         break;
       case 'self-joined':
         this.roomName.set(signal.roomName!);
@@ -126,7 +132,7 @@ export class AppService {
         this.remoteUsers.update((prev) => [
           ...prev,
           {
-            streamId: parsed.streamId!,
+            streamId: parsed.from!,
             userName: parsed.userName!,
             isMuted: false,
             isVideoOff: false,
@@ -135,24 +141,22 @@ export class AppService {
           },
         ]);
         await this.rtc.connect(
-          parsed.streamId!,
+          parsed.from!,
           this.stream()!,
           (e) => this.trackListener(e),
           this.roomId(),
         );
-        await this.rtc.createOffer(
-          this.roomId(),
-          parsed.streamId!,
-          this.streamId,
-        );
+        await this.rtc.createOffer(this.roomId(), this.streamId!, parsed.from!);
       } else if (parsed.type === 'disconnected') {
         this.remoteUsers.update((prev) =>
-          prev.filter((u) => u.streamId !== parsed.streamId),
+          prev.filter((u) => u.streamId !== parsed.from),
         );
       } else if (parsed.type === 'toggle-mute') {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
-            if (u.streamId === parsed.streamId) {
+            if (u.streamId === parsed.from) {
+              console.log('mute');
+              
               u.isMuted = !u.isMuted;
               u.stream?.getAudioTracks().forEach((track) => {
                 track.enabled = !track.enabled;
@@ -161,10 +165,13 @@ export class AppService {
             return u;
           }),
         );
+        
       } else if (parsed.type === 'toggle-video-off') {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
-            if (u.streamId === parsed.streamId) {
+            if (u.streamId === parsed.from) {
+              console.log('off');
+              
               u.isVideoOff = !u.isVideoOff;
               u.stream?.getVideoTracks().forEach((track) => {
                 track.enabled = !track.enabled;

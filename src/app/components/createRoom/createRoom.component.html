@@ -4,19 +4,32 @@
       (click)="onBack()"
       class="inline-flex items-center gap-2 text-sm text-[var(--text-primary)] transition"
     >
-      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <svg
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        />
       </svg>
-      {{ i18n.t('common.back') }}
+      {{ i18n.t("common.back") }}
     </button>
 
-    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t('create.title') }}</h2>
-    <p class="mt-2 text-[var(--text-primary)]">{{ i18n.t('create.subtitle') }}</p>
+    <h2 class="mt-5 text-3xl font-bold">{{ i18n.t("create.title") }}</h2>
+    <p class="mt-2 text-[var(--text-primary)]">
+      {{ i18n.t("create.subtitle") }}
+    </p>
 
     <div class="mt-8 space-y-5">
       <div>
-        <label class="field-label">{{ i18n.t('create.displayName') }}</label>
+        <label class="field-label">{{ i18n.t("create.displayName") }}</label>
         <input
+          (keydown)="onKeyDown($event)"
           [(ngModel)]="userName"
           type="text"
           [placeholder]="i18n.t('create.displayNamePlaceholder')"
@@ -25,8 +38,9 @@
       </div>
 
       <div>
-        <label class="field-label">{{ i18n.t('create.roomTitle') }}</label>
+        <label class="field-label">{{ i18n.t("create.roomTitle") }}</label>
         <input
+          (keydown)="onKeyDown($event)"
           [(ngModel)]="roomName"
           type="text"
           [placeholder]="i18n.t('create.roomTitlePlaceholder')"
@@ -36,18 +50,19 @@
 
       <button
         (click)="onCreate()"
-        [disabled]="isCreating"
+        [disabled]="disabled"
+        [class]="disabled ? 'disabled' : ''"
         class="app-btn-primary mt-2 w-full"
       >
         @if (isCreating) {
-          {{ i18n.t('create.creating') }}
+          {{ i18n.t("create.creating") }}
         } @else {
-          {{ i18n.t('create.submit') }}
+          {{ i18n.t("create.submit") }}
         }
       </button>
 
       <p class="text-xs text-[var(--text-muted)]">
-        {{ i18n.t('create.tip') }}
+        {{ i18n.t("create.tip") }}
       </p>
     </div>
   </section>

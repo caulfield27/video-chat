@@ -2,13 +2,17 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, signal } from '@angular/core';
 import { AppService } from '@/app/services/app.service';
 import { I18nService } from '@/app/services/i18n.service';
+import { LucideAngularModule, Users, Clock } from 'lucide-angular';
 
 @Component({
   selector: 'call-header',
   templateUrl: './header.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
 })
 export class CallHeader implements OnDestroy, AfterViewInit {
+  readonly UsersIcon = Users;
+  readonly ClockIcon = Clock;
+
   public isCodHidden: boolean = true;
   public isCopied: boolean = false;
   private callStartedAt = 0;

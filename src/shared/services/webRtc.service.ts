@@ -32,8 +32,6 @@ export class WebRtcService {
       this.addTracks(stream, id);
       this.addTrackListener(trackListener, id);
       this.listenCandidates(roomId, id, stream.id);
-      console.log('connected: ', this.peers, id);
-      
     } catch (e) {
       console.error('create peer connection error:', e);
     }
@@ -47,17 +45,20 @@ export class WebRtcService {
     });
   }
 
-  async createOffer(roomId: string | null, peerId: string, clientStreamId: string) {
-    const peer = this.peers.get(peerId);
+  async createOffer(
+    roomId: string | null,
+    fromId: string,
+    toId: string,
+  ) {
+    const peer = this.peers.get(toId);
     if (!peer || !roomId) return;
     try {
       const offer = await peer.pc.createOffer();
-      console.log('local: ', peer.pc.localDescription);
-      
       await peer.pc.setLocalDescription(offer);
       this.ws.send({
         roomId,
-        streamId: clientStreamId,
+        from: fromId,
+        to: toId,
         type: 'offer',
         data: offer,
       });
@@ -69,27 +70,25 @@ export class WebRtcService {
   async handleOffer(
     offer: RTCSessionDescriptionInit,
     roomId: string | null,
-    peerId: string,
-    selfId: string
+    fromId: string,
+    toId: string,
   ) {
-    const peer = this.peers.get(peerId);
+    const peer = this.peers.get(fromId);
     if (!peer || !roomId) return;
     try {
-      console.log('remote 1: ', peer.pc.remoteDescription);
-      
       await peer.pc.setRemoteDescription(offer);
       const answer = await peer.pc.createAnswer();
-      console.log('local 1: ', peer.pc.localDescription);
-      
+
       await peer.pc.setLocalDescription(answer);
-      
+
       this.ws.send({
         roomId,
-        streamId: selfId,
+        from: toId,
+        to: fromId,
         type: 'answer',
         data: answer,
       });
-      await this.flushPendingCandidates(peerId);
+      await this.flushPendingCandidates(fromId);
     } catch (e) {
       console.error('[rtc] handleOffer error:', e);
     }
@@ -97,15 +96,13 @@ export class WebRtcService {
 
   async handleRemoteDescription(
     answer: RTCSessionDescriptionInit,
-    peerId: string,
+    fromId: string,
   ) {
-    const peer = this.peers.get(peerId);
-    
+    const peer = this.peers.get(fromId);
+
     if (!peer) return;
-    console.log('remote: ', peer.pc.remoteDescription);
-    
     await peer.pc.setRemoteDescription(answer);
-    await this.flushPendingCandidates(peerId);
+    await this.flushPendingCandidates(fromId);
   }
 
   private async flushPendingCandidates(peerId: string) {
@@ -133,6 +130,7 @@ export class WebRtcService {
 
   async addCandidate(candidate: RTCIceCandidateInit, peerId: string) {
     const peer = this.peers.get(peerId);
+ 
     if (!peer) return;
     if (!peer.pc.remoteDescription) {
       peer.iceCandidatesQueue.push(candidate);
@@ -155,7 +153,8 @@ export class WebRtcService {
       if (e.candidate) {
         this.ws.send({
           roomId,
-          streamId: id,
+          from: id,
+          to: peerId,
           type: 'ice-candidate',
           data: e.candidate,
         });

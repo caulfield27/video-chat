@@ -13,7 +13,8 @@ export interface IMessage {
   roomId?: string | null;
   roomName?: string;
   userName?: string;
-  streamId?: string;
+  from?: string;
+  to?: string;
   message?: string;
   client: IClient;
   clients?: IClient[];
