@@ -40,6 +40,8 @@ export class WebRtcService {
   addTracks(stream: MediaStream, id: string) {
     const peer = this.peers.get(id);
     if (!peer) return;
+    console.log('tracks added');
+    
     stream.getTracks().forEach((track) => {
       peer.pc.addTrack(track, stream);
     });
@@ -121,6 +123,8 @@ export class WebRtcService {
 
     for (const candidate of pending) {
       try {
+        console.log('can added: ', candidate);
+        
         await peer.pc.addIceCandidate(candidate);
       } catch (e) {
         console.error('[rtc] flush candidate error:', e);
@@ -136,7 +140,8 @@ export class WebRtcService {
       peer.iceCandidatesQueue.push(candidate);
       return;
     }
-
+    console.log('can added: ', candidate);
+    
     await peer.pc.addIceCandidate(candidate);
   }
 

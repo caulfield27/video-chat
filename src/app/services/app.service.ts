@@ -116,6 +116,8 @@ export class AppService {
       (user) => user.stream?.id === remoteStream.id,
     );
     if (!alreadyExists) {
+      console.log('stream: ', remoteStream);
+      
       this.remoteUsers.update((prev) =>
         prev.map((u) =>
           u.streamId === remoteStream.id ? { ...u, stream: remoteStream } : u,
