@@ -64,6 +64,7 @@
                   [srcObject]="user.stream"
                   autoplay
                   playsinline
+                  muted
                   class="h-full w-full object-cover"
                   (canplay)="handleCanPlay($event)"
                 ></video>
@@ -102,12 +103,10 @@
               </div>
             } @else {
               <video
-                on
                 #localVideo
                 [srcObject]="app.stream()"
                 autoplay
                 playsinline
-                muted
                 class="h-full w-full object-cover"
               ></video>
             }
