@@ -46,9 +46,10 @@
                 </div>
               }
 
-              @if (!user.stream || user.isVideoOff) {
+              <!-- @if (!user.stream || user.isVideoOff) { -->
                 <div
-                  class="flex h-full w-full items-center justify-center bg-[var(--primary)]"
+                  [class]="!user.stream || user.isVideoOff ? 'flex' : 'hidden'"
+                  class="h-full w-full items-center justify-center bg-[var(--primary)]"
                 >
                   <div
                     class="flex h-24 w-24 items-center justify-center rounded-full text-white shadow-2xl md:h-32 md:w-32"
@@ -59,16 +60,15 @@
                     }}</span>
                   </div>
                 </div>
-              } @else {
+              <!-- } @else { -->
                 <video
                   [srcObject]="user.stream"
                   autoplay
                   playsinline
-                  muted
+                  [class]="!user.stream || user.isVideoOff ? 'hidden' : 'block'"
                   class="h-full w-full object-cover"
-                  (canplay)="handleCanPlay($event)"
                 ></video>
-              }
+              <!-- } -->
 
               <div
                 class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-surface)] to-transparent p-3 text-[var(--text-primary)]"
