@@ -116,9 +116,9 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
   handleCanPlay(e: Event) {
     const video = e.target as HTMLVideoElement;
-    console.log('ready: ', video);
-    
-    video.play();
+    void video.play().catch((err) => {
+      console.warn('video playback was blocked', err);
+    });
   }
 
   private bindLocalPreview(stream: MediaStream) {

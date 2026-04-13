@@ -65,6 +65,7 @@
                   [srcObject]="user.stream"
                   autoplay
                   playsinline
+                  (loadedmetadata)="handleCanPlay($event)"
                   [class]="!user.stream || user.isVideoOff ? 'hidden' : 'block'"
                   class="h-full w-full object-cover"
                 ></video>
@@ -107,6 +108,7 @@
                 [srcObject]="app.stream()"
                 autoplay
                 playsinline
+                (loadedmetadata)="handleCanPlay($event)"
                 class="h-full w-full object-cover"
               ></video>
             }
@@ -143,6 +145,7 @@
                 autoplay
                 playsinline
                 muted
+                (loadedmetadata)="handleCanPlay($event)"
                 class="h-full w-full object-cover"
               ></video>
             }

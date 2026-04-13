@@ -18,7 +18,7 @@ export class WebRtcService {
   async connect(
     id: string,
     stream: MediaStream,
-    trackListener: (ev: RTCTrackEvent) => void,
+    trackListener: (peerId: string, ev: RTCTrackEvent) => void,
     roomId: string | null,
   ) {
     try {
@@ -139,10 +139,13 @@ export class WebRtcService {
     await peer.pc.addIceCandidate(candidate);
   }
 
-  addTrackListener(cb: (event: RTCTrackEvent) => void, peerId: string) {
+  addTrackListener(
+    cb: (peerId: string, event: RTCTrackEvent) => void,
+    peerId: string,
+  ) {
     const peer = this.peers.get(peerId);
     if (!peer) return;
-    peer.pc.ontrack = cb;
+    peer.pc.ontrack = (event) => cb(peerId, event);
   }
 
   listenCandidates(roomId: string | null, peerId: string, id: string) {

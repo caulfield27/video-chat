@@ -101,7 +101,7 @@ export class AppService {
           await this.rtc.connect(
             user.streamId,
             this.stream()!,
-            (e) => this.trackListener(e),
+            (peerId, e) => this.trackListener(peerId, e),
             this.roomId(),
           );
         });
@@ -109,19 +109,22 @@ export class AppService {
     }
   }
 
-  trackListener(event: RTCTrackEvent) {
+  trackListener(peerId: string, event: RTCTrackEvent) {
     const remoteStream = event.streams[0];
     if (!remoteStream) return;
-    const alreadyExists = this.remoteUsers().some(
-      (user) => user.stream?.id === remoteStream.id,
+
+    this.remoteUsers.update((prev) =>
+      prev.map((user) => {
+        if (user.streamId !== peerId && user.stream?.id !== remoteStream.id) {
+          return user;
+        }
+
+        return {
+          ...user,
+          stream: remoteStream,
+        };
+      }),
     );
-    if (!alreadyExists) {
-      this.remoteUsers.update((prev) =>
-        prev.map((u) =>
-          u.streamId === remoteStream.id ? { ...u, stream: remoteStream } : u,
-        ),
-      );
-    }
   }
 
   async onWsMessage(event: MessageEvent<unknown>) {
@@ -143,7 +146,7 @@ export class AppService {
         await this.rtc.connect(
           parsed.from!,
           this.stream()!,
-          (e) => this.trackListener(e),
+          (peerId, e) => this.trackListener(peerId, e),
           this.roomId(),
         );
         await this.rtc.createOffer(this.roomId(), this.streamId!, parsed.from!);
