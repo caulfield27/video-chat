@@ -116,8 +116,6 @@ export class AppService {
       (user) => user.stream?.id === remoteStream.id,
     );
     if (!alreadyExists) {
-      console.log('stream: ', remoteStream);
-      
       this.remoteUsers.update((prev) =>
         prev.map((u) =>
           u.streamId === remoteStream.id ? { ...u, stream: remoteStream } : u,
@@ -157,8 +155,6 @@ export class AppService {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
             if (u.streamId === parsed.from) {
-              console.log('mute');
-              
               u.isMuted = !u.isMuted;
               u.stream?.getAudioTracks().forEach((track) => {
                 track.enabled = !track.enabled;
@@ -172,8 +168,6 @@ export class AppService {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
             if (u.streamId === parsed.from) {
-              console.log('off');
-              
               u.isVideoOff = !u.isVideoOff;
               u.stream?.getVideoTracks().forEach((track) => {
                 track.enabled = !track.enabled;

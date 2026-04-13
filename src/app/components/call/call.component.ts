@@ -114,6 +114,11 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     this.mobileChromeVisible.update((visible) => !visible);
   }
 
+  handleCanPlay(e: Event) {
+    const video = e.target as HTMLVideoElement;
+    video.play();
+  }
+
   private bindLocalPreview(stream: MediaStream) {
     const video = this.localVideo?.nativeElement;
     if (video) {
