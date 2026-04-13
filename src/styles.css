@@ -75,6 +75,10 @@
   }
 }
 
+video{
+  transform: scaleX(-1);
+}
+
 @layer components {
   .app-shell {
     @apply min-h-screen w-full px-4 pb-6 pt-16 md:px-8 md:py-16;

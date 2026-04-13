@@ -30,12 +30,12 @@
 
       @if (hasRemoteUsers) {
         <div
-          class="relative z-10 grid h-full w-full auto-rows-fr gap-2 overflow-y-auto p-2 md:gap-4 md:p-4"
+          class="relative z-10 grid h-full w-full auto-rows-fr gap-2 overflow-y-auto md:gap-4 md:p-4"
           [ngClass]="remoteGridClass"
         >
           @for (user of app.remoteUsers(); track user.streamId ?? $index) {
             <div
-              class="relative min-h-[220px] overflow-hidden rounded-2xl bg-[var(--primary-bg)] ring-1 ring-[var(--stroke)] md:min-h-[280px]"
+              class="relative min-h-[220px] overflow-hidden sm:rounded-2xl bg-[var(--primary-bg)] ring-1 ring-[var(--stroke)] md:min-h-[280px]"
             >
               @if (user.isMuted || user.isVideoOff) {
                 <div
@@ -119,9 +119,9 @@
           </div>
         </div>
       } @else {
-        <div class="relative z-10 h-full w-full p-2 md:p-4">
+        <div class="relative z-10 h-full w-full md:p-4">
           <div
-            class="relative flex h-full w-full overflow-hidden rounded-2xl bg-[var(--bg-primary)] ring-1 ring-[var(--stroke)]"
+            class="relative flex h-full w-full overflow-hidden sm:rounded-2xl bg-[var(--bg-primary)] ring-1 ring-[var(--stroke)]"
           >
             @if (!app.stream() || app.isVideoOff()) {
               <div
@@ -148,7 +148,7 @@
             }
 
             <div
-              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent p-4 text-[var(--text-primary)]"
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 to-transparent p-4 text-white"
             >
               <p class="text-sm font-medium md:text-base">
                 {{ app.userName() }} ({{ i18n.t("call.you") }})
