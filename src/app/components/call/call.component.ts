@@ -116,6 +116,8 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
   handleCanPlay(e: Event) {
     const video = e.target as HTMLVideoElement;
+    console.log('ready: ', video);
+    
     video.play();
   }
 
