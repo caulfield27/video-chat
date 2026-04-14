@@ -109,13 +109,15 @@ export class AppService {
     }
   }
 
-  trackListener(peerId: string, event: RTCTrackEvent) {
+  async trackListener(peerId: string, event: RTCTrackEvent) {
     const remoteStream = event.streams[0];
     if (!remoteStream) return;
     console.log('stream: ', remoteStream, 'users: ', this.remoteUsers());
-    
-    const alreadyExist = this.remoteUsers().some((u) => u.stream?.id === remoteStream.id);
-    if(alreadyExist) return;
+
+    const alreadyExist = this.remoteUsers().some(
+      (u) => u.stream?.id === remoteStream.id,
+    );
+    if (alreadyExist) return;
 
     const video = document.createElement('video');
     video.srcObject = remoteStream;
@@ -125,6 +127,8 @@ export class AppService {
     video.style.height = '100%';
 
     document.body.appendChild(video);
+
+    await video.play();
     this.remoteUsers.update((prev) =>
       prev.map((user) => {
         if (user.streamId !== remoteStream.id) {
@@ -178,7 +182,6 @@ export class AppService {
             return u;
           }),
         );
-        
       } else if (parsed.type === 'toggle-video-off') {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
