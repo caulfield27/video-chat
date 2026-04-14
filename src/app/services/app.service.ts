@@ -109,29 +109,13 @@ export class AppService {
     }
   }
 
-  async trackListener(peerId: string, event: RTCTrackEvent) {
+  trackListener(peerId: string, event: RTCTrackEvent) {
     const remoteStream = event.streams[0];
     if (!remoteStream) return;
-    console.log('stream: ', remoteStream, 'users: ', this.remoteUsers());
 
-    const alreadyExist = this.remoteUsers().some(
-      (u) => u.stream?.id === remoteStream.id,
-    );
-    if (alreadyExist) return;
-
-    const video = document.createElement('video');
-    video.srcObject = remoteStream;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.style.width = '100%';
-    video.style.height = '100%';
-
-    document.body.appendChild(video);
-
-    await video.play();
     this.remoteUsers.update((prev) =>
       prev.map((user) => {
-        if (user.streamId !== remoteStream.id) {
+        if (user.streamId !== peerId && user.stream?.id !== remoteStream.id) {
           return user;
         }
 
@@ -182,6 +166,7 @@ export class AppService {
             return u;
           }),
         );
+        
       } else if (parsed.type === 'toggle-video-off') {
         this.remoteUsers.update((prev) =>
           prev.map((u) => {
