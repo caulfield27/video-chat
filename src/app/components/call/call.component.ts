@@ -2,10 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   OnDestroy,
   signal,
-  ViewChild,
 } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import { I18nService } from '../../services/i18n.service';
@@ -13,6 +11,7 @@ import { WebsocketService } from '@/shared/services/websocket.service';
 import { LucideAngularModule, MicOff, VideoOff } from 'lucide-angular';
 import { CallChat, CallHeader } from './_components';
 import { CallFooter } from './_components/footer/footer.component';
+import { MediaStreamDirective } from '@/shared/directives/mediaStream.directive';
 
 @Component({
   selector: 'app-call',
@@ -36,13 +35,12 @@ import { CallFooter } from './_components/footer/footer.component';
     CallChat,
     CallHeader,
     CallFooter,
+    MediaStreamDirective,
   ],
 })
 export class CallComponent implements AfterViewInit, OnDestroy {
   readonly MicOffIcon = MicOff;
   readonly VideoOffIcon = VideoOff;
-
-  @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
 
   public color = 'black';
   readonly mobileChromeVisible = signal(true);
@@ -64,7 +62,6 @@ export class CallComponent implements AfterViewInit, OnDestroy {
 
       this.app.stream.set(stream);
       this.app.streamId = stream.id;
-      this.bindLocalPreview(stream);
       this.ws.send({
         type: 'joined-metadata',
         roomId: this.app.roomId(),
@@ -119,13 +116,5 @@ export class CallComponent implements AfterViewInit, OnDestroy {
     void video.play().catch((err) => {
       console.warn('video playback was blocked', err);
     });
-  }
-
-  private bindLocalPreview(stream: MediaStream) {
-    const video = this.localVideo?.nativeElement;
-    if (video) {
-      video.srcObject = stream;
-      video.muted = true;
-    }
   }
 }

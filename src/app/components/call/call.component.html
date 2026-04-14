@@ -58,7 +58,7 @@
                 </div>
               } @else {
                 <video
-                  [srcObject]="user.stream"
+                  [appMediaStream]="user.stream"
                   autoplay
                   playsinline
                   (loadedmetadata)="handleCanPlay($event)"
@@ -100,9 +100,10 @@
             } @else {
               <video
                 #localVideo
-                [srcObject]="app.stream()"
+                [appMediaStream]="app.stream()"
                 autoplay
                 playsinline
+                muted
                 (loadedmetadata)="handleCanPlay($event)"
                 class="h-full w-full object-cover"
               ></video>
@@ -136,7 +137,7 @@
             } @else {
               <video
                 #localVideo
-                [srcObject]="app.stream()"
+                [appMediaStream]="app.stream()"
                 autoplay
                 playsinline
                 muted
