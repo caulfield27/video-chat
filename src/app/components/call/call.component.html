@@ -1,4 +1,4 @@
-<div class="relative flex min-h-[100dvh] flex-col md:gap-4 md:px-6 md:py-4">
+<!-- <div class="relative flex min-h-[100dvh] flex-col md:gap-4 md:px-6 md:py-4">
   <div class="hidden md:block">
     <call-header />
   </div>
@@ -24,9 +24,6 @@
       class="relative min-h-0 overflow-hidden md:rounded-[28px]"
       (click)="handleStageTap($event)"
     >
-      <!-- <div
-        class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"
-      ></div> -->
 
       @if (hasRemoteUsers) {
         <div
@@ -46,10 +43,9 @@
                 </div>
               }
 
-              <!-- @if (!user.stream || user.isVideoOff) { -->
+              @if (!user.stream || user.isVideoOff) {
                 <div
-                  [class]="!user.stream || user.isVideoOff ? 'flex' : 'hidden'"
-                  class="h-full w-full items-center justify-center bg-[var(--primary)]"
+                  class="h-full w-full flex items-center justify-center bg-[var(--primary)]"
                 >
                   <div
                     class="flex h-24 w-24 items-center justify-center rounded-full text-white shadow-2xl md:h-32 md:w-32"
@@ -60,16 +56,15 @@
                     }}</span>
                   </div>
                 </div>
-              <!-- } @else { -->
+              } @else {
                 <video
                   [srcObject]="user.stream"
                   autoplay
                   playsinline
                   (loadedmetadata)="handleCanPlay($event)"
-                  [class]="!user.stream || user.isVideoOff ? 'hidden' : 'block'"
                   class="h-full w-full object-cover"
                 ></video>
-              <!-- } -->
+              }
 
               <div
                 class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-surface)] to-transparent p-3 text-[var(--text-primary)]"
@@ -183,4 +178,4 @@
       <call-footer />
     </div>
   </div>
-</div>
+</div> -->
