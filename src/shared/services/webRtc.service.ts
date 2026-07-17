@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
+import { GET_ICE_SERVERS } from '@/app/app.config';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +23,28 @@ export class WebRtcService {
     roomId: string | null,
   ) {
     try {
-      const pc = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-      });
+      let iceConfig;
+      try {
+        const response = await fetch(GET_ICE_SERVERS, {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          iceConfig = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+          };
+        } else {
+          const data = await response.json();
+          iceConfig = data.iceServers;
+        }
+      } catch (e) {
+        console.error(e);
+        iceConfig = {
+          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+        };
+      }
+
+      const pc = new RTCPeerConnection(iceConfig);
       this.peers.set(id, {
         pc,
         iceCandidatesQueue: [],
@@ -45,11 +65,7 @@ export class WebRtcService {
     });
   }
 
-  async createOffer(
-    roomId: string | null,
-    fromId: string,
-    toId: string,
-  ) {
+  async createOffer(roomId: string | null, fromId: string, toId: string) {
     const peer = this.peers.get(toId);
     if (!peer || !roomId) return;
     try {
@@ -130,7 +146,7 @@ export class WebRtcService {
 
   async addCandidate(candidate: RTCIceCandidateInit, peerId: string) {
     const peer = this.peers.get(peerId);
- 
+
     if (!peer) return;
     if (!peer.pc.remoteDescription) {
       peer.iceCandidatesQueue.push(candidate);

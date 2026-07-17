@@ -1,5 +1,5 @@
-<div class="relative flex min-h-[100dvh] flex-col md:gap-4 md:px-6 md:py-4">
-  <div class="hidden md:block">
+<div class="relative flex h-[100dvh] flex-col overflow-hidden md:gap-4 md:px-6 md:py-4">
+  <div class="hidden shrink-0 md:block">
     <call-header />
   </div>
 
@@ -17,7 +17,7 @@
   </div>
 
   <main
-    class="grid min-h-0 flex-1 md:gap-4"
+    class="grid min-h-0 flex-1 overflow-hidden md:gap-4"
     [ngClass]="app.isChatOpen() ? 'md:grid-cols-[minmax(0,1fr)_320px]' : ''"
   >
     <section
@@ -27,12 +27,12 @@
 
       @if (hasRemoteUsers) {
         <div
-          class="relative z-10 grid h-full w-full auto-rows-fr gap-2 overflow-y-auto md:gap-4 md:p-4"
+          class="relative z-10 grid h-full w-full auto-rows-fr gap-2 overflow-hidden md:gap-4 md:p-4"
           [ngClass]="remoteGridClass"
         >
           @for (user of app.remoteUsers(); track user.streamId ?? $index) {
             <div
-              class="relative min-h-[220px] overflow-hidden sm:rounded-2xl bg-[var(--primary-bg)] ring-1 ring-[var(--stroke)] md:min-h-[280px]"
+              class="relative min-h-0 overflow-hidden sm:rounded-2xl bg-[var(--primary-bg)] ring-1 ring-[var(--stroke)]"
             >
               @if (user.isMuted || user.isVideoOff) {
                 <div
@@ -163,7 +163,7 @@
     }
   </main>
 
-  <div class="hidden md:block">
+  <div class="hidden shrink-0 md:block">
     <call-footer />
   </div>
 

@@ -1,5 +1,5 @@
 <aside
-  class="bg-[var(--bg-primary)] glass-card flex h-[60vh] flex-col overflow-hidden max-lg:fixed max-lg:inset-0 max-lg:w-screen max-lg:h-[100svh] max-lg:rounded-none z-[99]"
+  class="bg-[var(--bg-primary)] glass-card flex h-full min-h-0 flex-col overflow-hidden max-md:fixed max-md:inset-0 max-md:w-screen max-md:h-[100svh] max-md:rounded-none z-[99]"
 >
   <!-- Header -->
   <div
@@ -16,7 +16,7 @@
   </div>
 
   <!-- Messages -->
-  <div class="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+  <div class="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-4">
     @for (message of app.chatMessages(); track $index) {
       <div
         class="flex gap-2 items-end"
