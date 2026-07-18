@@ -11,7 +11,7 @@ import { I18nService, Lang } from '@/app/services/i18n.service';
       <button
         type="button"
         (click)="toggleLanguageMenu()"
-        class="flex min-w-44 items-center justify-between gap-3 rounded-lg border border-[var(--stroke)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--brand-strong)]"
+        class="flex min-w-44 items-center justify-between gap-3 rounded-[var(--radius-btn)] border border-[var(--stroke)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--brand-strong)]"
       >
         <span class="inline-flex items-center gap-2">
           <img
@@ -39,7 +39,7 @@ import { I18nService, Lang } from '@/app/services/i18n.service';
 
       @if (isLanguageMenuOpen) {
         <div
-          class="mt-2 overflow-hidden rounded-lg border border-[var(--stroke)] bg-[var(--bg-primary)] shadow-lg"
+          class="mt-2 overflow-hidden rounded-[var(--radius-btn)] border border-[var(--stroke)] bg-[var(--bg-primary)] shadow-lg"
         >
           @for (lang of i18n.availableLangs; track lang) {
             <button

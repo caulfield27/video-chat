@@ -1,81 +1,72 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  
-  :root.light {
-    --bg-primary: #fafafa;     
-    --bg-surface: #e4e4e7;
-    --stroke: #e5e5e5;         
+  /* Composio-inspired design system — the app's single, permanent look.
+     Near-black monolithic canvas with a single electric-blue voltage. */
+  :root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #0f0f0f;
+    --bg-surface: #181818;
+    --stroke: #222222;
 
-    --text-primary: #0f172a;     
-    --text-muted: #737373;
+    --text-primary: #ffffff;
+    --text-muted: #a8a8a8;
+    --text-secondary: #ffffff;
 
-    --text-secondary: #fafafa;
-
-    --brand: #f97316;           
-    --brand-strong: #ea580c;
-
-    --danger: #f43f5e;
-    --danger-strong: #e11d48;
-
-    --surface-glass: rgba(255, 255, 255, 0.8);
-    --surface-glass-strong: rgba(248, 250, 252, 0.95);
-
-    --input-bg: #ffffff;
-
-    --ring-brand: #ea580c;
-    --hover-surface: #d4d4d8;
-
-    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-
-    --bg-radial-1: #e2e8f0;
-    --bg-radial-2: #cbd5e1;
-  }
-
-  :root.dark {
-    --bg-primary: #171717;
-    --bg-secondary: #18181b;    
-    --bg-surface: #0a0a0a;
-    --stroke: #404040;         
-
-    --text-primary: #f5f5f5;     
-    --text-muted: #e5e5e5;
-
-    --text-secondary: #fafafa;
-
-    --brand: #f97316;           
-    --brand-strong: #ea580c;
+    --brand: #0007cd;
+    --brand-strong: #0007cd;
 
     --danger: #f43f5e;
     --danger-strong: #e11d48;
 
-    --surface-glass: #18181b;
-    --surface-glass-strong: #09090b;
+    --surface-glass: #181818;
+    --surface-glass-strong: #181818;
 
-    --input-bg: var(--bg-surface);
+    --input-bg: #181818;
 
-    --ring-brand: #ea580c;
-    --hover-surface: #171717;
+    --ring-brand: #0007cd;
+    --hover-surface: #222222;
 
-    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --shadow-lg: none;
 
-    --bg-radial-1: #e2e8f0;
-    --bg-radial-2: #cbd5e1;
+    --radius-btn: 8px;
+    --radius-input: 8px;
+    --radius-card: 16px;
+
+    --font-sans: "Inter", sans-serif;
+    --font-display: "Inter", sans-serif;
   }
 
   html,
   body {
-    font-family: "Space Grotesk", sans-serif;
+    font-family: var(--font-sans);
     background: var(--bg-primary);
     color: var(--text-primary);
   }
 }
 
-video{
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.glass-card {
+  border-radius: var(--radius-card);
+}
+
+.app-btn-primary,
+.app-btn-secondary {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+video {
   transform: scaleX(-1);
 }
 
@@ -85,14 +76,9 @@ video{
   }
 
   .glass-card {
-    background: linear-gradient(
-      145deg,
-      var(--surface-glass),
-      var(--surface-glass-strong)
-    );
+    background: var(--surface-glass);
     border: 1px solid var(--stroke);
     box-shadow: var(--shadow-lg);
-    @apply rounded-2xl backdrop-blur-sm;
   }
 
   .field-label {
@@ -104,8 +90,9 @@ video{
     border: 1px solid var(--stroke);
     background: var(--input-bg);
     color: var(--text-primary);
+    border-radius: var(--radius-input);
 
-    @apply w-full rounded-xl px-4 py-3 outline-none transition;
+    @apply w-full px-4 py-3 outline-none transition;
   }
 
   .app-input:focus {
@@ -115,8 +102,9 @@ video{
   .app-btn-primary {
     background: var(--brand-strong);
     color: var(--text-secondary);
+    border-radius: var(--radius-btn);
 
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition;
   }
 
   .app-btn-primary:hover {
@@ -127,8 +115,9 @@ video{
     border: 1px solid var(--stroke);
     color: var(--text-primary);
     background: var(--bg-surface);
+    border-radius: var(--radius-btn);
 
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition;
   }
 
   .app-btn-secondary:hover {
@@ -138,11 +127,12 @@ video{
   .app-btn-danger {
     background: linear-gradient(140deg, var(--danger), var(--danger-strong));
     color: #fff;
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition hover:brightness-105;
+    border-radius: var(--radius-btn);
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition hover:brightness-105;
   }
 }
 
-.disabled{
+.disabled {
   pointer-events: none;
   opacity: 0.6;
 }

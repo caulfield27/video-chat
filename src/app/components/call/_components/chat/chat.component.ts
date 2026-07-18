@@ -9,6 +9,11 @@ import { I18nService } from '@/app/services/i18n.service';
 @Component({
   selector: 'call-chat',
   templateUrl: './chat.component.html',
+  styles: `
+    :host {
+      display: contents;
+    }
+  `,
   imports: [CommonModule, LucideAngularModule, FormsModule],
 })
 export class CallChat implements OnInit {

@@ -41,3 +41,13 @@ export interface IChatMessage {
   type: 'me' | 'other';
   user: Omit<IClient, 'socket'>;
 }
+
+export interface IGalleryTile {
+  id: string;
+  userName: string;
+  stream: MediaStream | null;
+  isMuted: boolean;
+  isVideoOff: boolean;
+  color: string;
+  isLocal: boolean;
+}
