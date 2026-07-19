@@ -1,4 +1,4 @@
-<header class="glass-card">
+<header class="solid-panel">
   <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
     <!-- Desktop Layout -->
     <div class="hidden md:flex items-center justify-between h-20 gap-4">
@@ -52,7 +52,7 @@
             </p>
             <div class="flex items-center gap-2">
               <code
-                class="glass-chip text-sm font-mono font-semibold text-[var(--text-primary)] px-3 py-1"
+                class="solid-chip text-sm font-mono font-semibold text-[var(--text-primary)] px-3 py-1"
               >
                 {{ isCodHidden ? "••••••" : app.roomId() }}
               </code>
@@ -144,7 +144,7 @@
       <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
         <!-- Participants Count -->
         <div
-          class="glass-chip flex items-center space-x-3 px-4 py-2.5"
+          class="solid-chip flex items-center space-x-3 px-4 py-2.5"
         >
           <div class="relative flex-shrink-0">
             <div class="flex items-center justify-center">
@@ -173,7 +173,7 @@
 
         <!-- Call Duration Timer -->
         <div
-          class="glass-chip flex items-center space-x-3 px-4 py-2.5"
+          class="solid-chip flex items-center space-x-3 px-4 py-2.5"
         >
           <div class="flex items-center justify-center relative">
             <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>
@@ -236,7 +236,7 @@
           </p>
           <div class="flex items-center gap-2">
             <code
-              class="glass-chip text-xs font-mono font-semibold text-[var(--brand)] px-2.5 py-1.5 flex-1 truncate"
+              class="solid-chip text-xs font-mono font-semibold text-[var(--text-primary)] px-2.5 py-1.5 flex-1 truncate"
             >
               {{ isCodHidden ? "••••••" : app.roomId() }}
             </code>
@@ -329,7 +329,7 @@
       <div class="grid grid-cols-2 gap-3">
         <!-- Participants Count -->
         <div
-          class="glass-chip flex items-center gap-2 px-3 py-2"
+          class="solid-chip flex items-center gap-2 px-3 py-2"
         >
           <div class="relative flex-shrink-0">
             <div class="flex items-center justify-center">
@@ -355,7 +355,7 @@
 
         <!-- Call Duration Timer -->
         <div
-          class="glass-chip flex items-center gap-2 px-3 py-2"
+          class="solid-chip flex items-center gap-2 px-3 py-2"
         >
           <div class="flex items-center justify-center relative flex-shrink-0">
             <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>

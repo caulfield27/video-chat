@@ -13,6 +13,19 @@ import { I18nService } from '@/app/services/i18n.service';
     :host {
       display: contents;
     }
+
+    /* Chat opted out of the liquid glass material — flat input to match the
+       solid chat panel instead of the translucent .app-input used elsewhere. */
+    .app-input {
+      background: var(--bg-surface);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .app-input:hover,
+    .app-input:focus {
+      background: var(--bg-surface);
+    }
   `,
   imports: [CommonModule, LucideAngularModule, FormsModule],
 })

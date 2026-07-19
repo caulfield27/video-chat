@@ -1,29 +1,29 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { I18nService, Lang } from '@/app/services/i18n.service';
+import { BrandService, Brand } from '@/app/services/brand.service';
+import { I18nService } from '@/app/services/i18n.service';
 
 @Component({
-  selector: 'language-select',
+  selector: 'brand-select',
   standalone: true,
   imports: [CommonModule],
   template: `
     <div class="relative">
       <button
         type="button"
-        (click)="toggleLanguageMenu()"
+        (click)="toggleBrandMenu()"
         class="glass-pill flex min-w-44 items-center justify-between gap-3 rounded-[var(--radius-btn)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none"
       >
         <span class="inline-flex items-center gap-2">
-          <img
-            [src]="flagFor(i18n.currentLang())"
-            [alt]="languageLabel(i18n.currentLang())"
-            class="h-4 w-6 rounded-sm object-cover"
-          />
-          {{ languageLabel(i18n.currentLang()) }}
+          <span
+            class="h-4 w-4 rounded-full"
+            [style.background]="brand.swatchFor(brand.currentBrand())"
+          ></span>
+          {{ brandLabel(brand.currentBrand()) }}
         </span>
         <svg
           class="h-4 w-4 text-[var(--text-primary)] transition"
-          [ngClass]="isLanguageMenuOpen ? 'rotate-180' : 'rotate-0'"
+          [ngClass]="isBrandMenuOpen ? 'rotate-180' : 'rotate-0'"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -37,20 +37,19 @@ import { I18nService, Lang } from '@/app/services/i18n.service';
         </svg>
       </button>
 
-      @if (isLanguageMenuOpen) {
+      @if (isBrandMenuOpen) {
         <div class="glass-dropdown absolute right-0 top-full z-50 mt-2 min-w-44 overflow-hidden">
-          @for (lang of i18n.availableLangs; track lang) {
+          @for (option of brand.availableBrands; track option) {
             <button
               type="button"
-              (click)="onLangChange(lang)"
+              (click)="onBrandChange(option)"
               class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[var(--text-primary)] transition-colors hover:bg-white/10"
             >
-              <img
-                [src]="flagFor(lang)"
-                [alt]="languageLabel(lang)"
-                class="h-4 w-6 rounded-sm object-cover"
-              />
-              {{ languageLabel(lang) }}
+              <span
+                class="h-4 w-4 rounded-full"
+                [style.background]="brand.swatchFor(option)"
+              ></span>
+              {{ brandLabel(option) }}
             </button>
           }
         </div>
@@ -58,10 +57,11 @@ import { I18nService, Lang } from '@/app/services/i18n.service';
     </div>
   `,
 })
-export class LanguageSelectComponent {
-  isLanguageMenuOpen = false;
+export class BrandSelectComponent {
+  isBrandMenuOpen = false;
 
   constructor(
+    public brand: BrandService,
     public i18n: I18nService,
     private host: ElementRef<HTMLElement>,
   ) {}
@@ -69,28 +69,22 @@ export class LanguageSelectComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.host.nativeElement.contains(event.target as Node)) {
-      this.isLanguageMenuOpen = false;
+      this.isBrandMenuOpen = false;
     }
   }
 
-  toggleLanguageMenu() {
-    this.isLanguageMenuOpen = !this.isLanguageMenuOpen;
+  toggleBrandMenu() {
+    this.isBrandMenuOpen = !this.isBrandMenuOpen;
   }
 
-  onLangChange(lang: Lang) {
-    this.i18n.setLang(lang);
-    this.isLanguageMenuOpen = false;
+  onBrandChange(option: Brand) {
+    this.brand.setBrand(option);
+    this.isBrandMenuOpen = false;
   }
 
-  languageLabel(lang: Lang) {
-    if (lang === 'ru') return this.i18n.t('lang.ru');
-    if (lang === 'en') return this.i18n.t('lang.en');
-    return this.i18n.t('lang.tj');
-  }
-
-  flagFor(lang: Lang) {
-    if (lang === 'ru') return '/flags/ru.svg';
-    if (lang === 'en') return '/flags/en.svg';
-    return '/flags/tj.svg';
+  brandLabel(option: Brand) {
+    if (option === 'red') return this.i18n.t('brand.red');
+    if (option === 'violet') return this.i18n.t('brand.violet');
+    return this.i18n.t('brand.green');
   }
 }

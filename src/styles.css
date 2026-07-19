@@ -17,8 +17,12 @@
     --text-muted: #a8a8a8;
     --text-secondary: #ffffff;
 
-    --brand: #0007cd;
-    --brand-strong: #0007cd;
+    --brand: #22c55e;
+    --brand-strong: #16a34a;
+    /* RGB channels of the tokens above, kept in sync manually — needed
+       because rgba() can't decompose a hex custom property on its own. */
+    --brand-rgb: 34 197 94;
+    --brand-strong-rgb: 22 163 74;
 
     --danger: #f43f5e;
     --danger-strong: #e11d48;
@@ -31,7 +35,7 @@
 
     --input-bg: #181818;
 
-    --ring-brand: #0007cd;
+    --ring-brand: #16a34a;
     --hover-surface: #222222;
 
     --shadow-lg: none;
@@ -72,6 +76,34 @@
     /* Overshoot "gel" spring for taps/hovers; plain ease for passive state changes. */
     --glass-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --glass-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---------- Brand palette variants ----------
+     Swapped at runtime via [data-brand] on <html> (see BrandService). Each
+     block redefines every token the base palette above defines, so switching
+     is a single attribute write with no risk of stale values leaking through. */
+  :root[data-brand="red"] {
+    --brand: #f43f5e;
+    --brand-strong: #e11d48;
+    --brand-rgb: 244 63 94;
+    --brand-strong-rgb: 225 29 72;
+    --ring-brand: #e11d48;
+  }
+
+  :root[data-brand="violet"] {
+    --brand: #a5b4fc;
+    --brand-strong: #818cf8;
+    --brand-rgb: 165 180 252;
+    --brand-strong-rgb: 129 140 248;
+    --ring-brand: #818cf8;
+  }
+
+  :root[data-brand="green"] {
+    --brand: #22c55e;
+    --brand-strong: #16a34a;
+    --brand-rgb: 34 197 94;
+    --brand-strong-rgb: 22 163 74;
+    --ring-brand: #16a34a;
   }
 
   html,
@@ -154,6 +186,23 @@ video {
     mask-composite: exclude;
   }
 
+  /* ---------- Flat (non-glass) panel/chip ----------
+     Deliberately opted out of the liquid material — fully opaque, no blur,
+     no specular edge. Used for header and chat, which read better as a
+     stable, low-motion surface than a floating glass one. */
+  .solid-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 16px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  .solid-chip {
+    background: var(--bg-surface);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-chip);
+  }
+
   /* ---------- Liquid Glass pill (small round/interactive controls) ---------- */
   .glass-pill {
     position: relative;
@@ -227,10 +276,10 @@ video {
   }
 
   .glass-tile.is-speaking {
-    border-color: rgba(56, 97, 251, 0.9);
+    border-color: rgba(var(--brand-strong-rgb), 0.9);
     box-shadow:
       inset 0 1px 0 var(--glass-edge-top),
-      0 0 0 3px rgba(56, 97, 251, 0.4),
+      0 0 0 3px rgba(var(--brand-strong-rgb), 0.4),
       var(--glass-shadow-near),
       var(--glass-shadow-far);
   }
@@ -297,14 +346,14 @@ video {
 
   .app-input:focus {
     background: var(--glass-bg-strong);
-    border-color: rgba(56, 97, 251, 0.7);
-    box-shadow: 0 0 0 3px rgba(56, 97, 251, 0.25);
+    border-color: rgba(var(--brand-strong-rgb), 0.7);
+    box-shadow: 0 0 0 3px rgba(var(--brand-strong-rgb), 0.25);
   }
 
   .app-btn-primary {
     position: relative;
     isolation: isolate;
-    background: linear-gradient(180deg, #3861fb 0%, var(--brand-strong) 100%);
+    background: linear-gradient(180deg, var(--brand) 0%, var(--brand-strong) 100%);
     color: var(--text-secondary);
     border-radius: var(--radius-btn);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), var(--glass-shadow-near);

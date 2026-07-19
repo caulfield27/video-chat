@@ -7,6 +7,9 @@ type TranslationKey =
   | 'lang.ru'
   | 'lang.en'
   | 'lang.tj'
+  | 'brand.red'
+  | 'brand.violet'
+  | 'brand.green'
   | 'menu.badge'
   | 'menu.heroTitle1'
   | 'menu.heroTitle2'
@@ -74,6 +77,9 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'lang.ru': 'Русский',
     'lang.en': 'English',
     'lang.tj': 'Тоҷикӣ',
+    'brand.red': 'Красный',
+    'brand.violet': 'Фиолетовый',
+    'brand.green': 'Зелёный',
     'menu.badge': 'P2P-встреча в реальном времени',
     'menu.heroTitle1': 'Встречайтесь быстро.',
     'menu.heroTitle2': 'Решайте быстрее.',
@@ -145,6 +151,9 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'lang.ru': 'Russian',
     'lang.en': 'English',
     'lang.tj': 'Tajik',
+    'brand.red': 'Red',
+    'brand.violet': 'Violet',
+    'brand.green': 'Green',
     'menu.badge': 'Real-time P2P meeting',
     'menu.heroTitle1': 'Meet fast.',
     'menu.heroTitle2': 'Ship decisions faster.',
@@ -214,6 +223,9 @@ const TRANSLATIONS: Record<Lang, Record<TranslationKey, string>> = {
     'lang.ru': 'Русӣ',
     'lang.en': 'English',
     'lang.tj': 'Тоҷикӣ',
+    'brand.red': 'Сурх',
+    'brand.violet': 'Бунафш',
+    'brand.green': 'Сабз',
     'menu.badge': 'Мулоқоти P2P дар вақти воқеӣ',
     'menu.heroTitle1': 'Зуд вохӯрӣ кунед.',
     'menu.heroTitle2': 'Қарорҳоро зудтар қабул кунед.',
