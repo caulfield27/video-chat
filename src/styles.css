@@ -23,6 +23,9 @@
     --danger: #f43f5e;
     --danger-strong: #e11d48;
 
+    --success: #22c55e;
+    --success-strong: #16a34a;
+
     --surface-glass: #181818;
     --surface-glass-strong: #181818;
 
@@ -33,12 +36,42 @@
 
     --shadow-lg: none;
 
-    --radius-btn: 8px;
-    --radius-input: 8px;
-    --radius-card: 16px;
+    /* Large, concentric corner radii — Liquid Glass reads as poured material,
+       not clipped boxes, so the biggest surfaces get the roundest corners. */
+    --radius-btn: 16px;
+    --radius-input: 14px;
+    --radius-card: 28px;
+    --radius-chip: 12px;
+    --radius-pill: 999px;
 
     --font-sans: "Inter", sans-serif;
     --font-display: "Inter", sans-serif;
+
+    /* Video tile idle surfaces (behind avatar fallback / before stream loads). */
+    --primary-bg: #141416;
+    --primary: #1c1c20;
+
+    /* --- Liquid Glass material tokens ---
+       The canvas is near-black, so the material itself is a *light* translucent
+       film (like frosted glass lifted off a dark table) that catches ambient
+       light at its edges — not a dark-on-dark tint, which would read as flat. */
+    --glass-bg: rgba(255, 255, 255, 0.055);
+    --glass-bg-strong: rgba(255, 255, 255, 0.1);
+    --glass-bg-pressed: rgba(255, 255, 255, 0.16);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --glass-edge-top: rgba(255, 255, 255, 0.55);
+    --glass-edge-bottom: rgba(255, 255, 255, 0.03);
+
+    --glass-blur: 24px;
+    --glass-blur-sm: 14px;
+    --glass-saturate: 160%;
+
+    --glass-shadow-near: 0 1px 1px rgba(0, 0, 0, 0.45), 0 8px 18px -10px rgba(0, 0, 0, 0.6);
+    --glass-shadow-far: 0 32px 64px -28px rgba(0, 0, 0, 0.8);
+
+    /* Overshoot "gel" spring for taps/hovers; plain ease for passive state changes. */
+    --glass-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --glass-ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html,
@@ -75,10 +108,162 @@ video {
     @apply min-h-screen w-full px-4 pb-6 pt-16 md:px-8 md:py-16;
   }
 
-  .glass-card {
-    background: var(--surface-glass);
-    border: 1px solid var(--stroke);
-    box-shadow: var(--shadow-lg);
+  /* ---------- Liquid Glass panels (header, footer bar, chat, cards) ---------- */
+  .glass-card,
+  .glass-dropdown {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(165deg, var(--glass-bg-strong), var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow-near), var(--glass-shadow-far);
+  }
+
+  .glass-dropdown {
+    border-radius: var(--radius-btn);
+    animation: glass-pop 220ms var(--glass-spring);
+  }
+
+  /* Specular edge: a 1px gradient ring, lit from the top like light catching
+     the rim of a glass slab. Uses a masked gradient border so it works on any
+     corner radius without an extra wrapper element. */
+  .glass-card::before,
+  .glass-pill::before,
+  .glass-chip::before,
+  .glass-dropdown::before,
+  .glass-tile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      180deg,
+      var(--glass-edge-top),
+      transparent 40%,
+      transparent 60%,
+      var(--glass-edge-bottom)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* ---------- Liquid Glass pill (small round/interactive controls) ---------- */
+  .glass-pill {
+    position: relative;
+    isolation: isolate;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow-near);
+    transition:
+      transform 240ms var(--glass-spring),
+      box-shadow 240ms var(--glass-spring),
+      background-color 200ms var(--glass-ease),
+      border-color 200ms var(--glass-ease);
+  }
+
+  .glass-pill:hover {
+    background: var(--glass-bg-strong);
+    transform: translateY(-1px);
+    box-shadow: var(--glass-shadow-near), var(--glass-shadow-far);
+  }
+
+  .glass-pill:active {
+    background: var(--glass-bg-pressed);
+    transform: scale(0.94);
+    transition-duration: 120ms;
+  }
+
+  .glass-pill.tint-danger {
+    background: linear-gradient(180deg, rgba(244, 63, 94, 0.55), rgba(225, 29, 72, 0.42));
+    border-color: rgba(244, 63, 94, 0.55);
+  }
+
+  .glass-pill.tint-danger:hover {
+    background: linear-gradient(180deg, rgba(244, 63, 94, 0.65), rgba(225, 29, 72, 0.52));
+  }
+
+  .glass-pill.tint-success {
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.5), rgba(22, 163, 74, 0.38));
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .glass-pill.tint-success:hover {
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.6), rgba(22, 163, 74, 0.48));
+  }
+
+  /* ---------- Liquid Glass chip (compact inline stat/badge surfaces) ---------- */
+  .glass-chip {
+    position: relative;
+    isolation: isolate;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-chip);
+    box-shadow: inset 0 1px 0 var(--glass-edge-top), var(--glass-shadow-near);
+  }
+
+  /* ---------- Video tile chrome: edge highlight + active-speaker glow ----------
+     No backdrop-filter here — the tile is filled edge-to-edge by an opaque
+     <video>, so blurring "what's behind it" would be wasted GPU work. */
+  .glass-tile {
+    position: relative;
+    isolation: isolate;
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge-top),
+      inset 0 -1px 0 var(--glass-edge-bottom),
+      var(--glass-shadow-near);
+    transition: box-shadow 280ms var(--glass-ease), border-color 280ms var(--glass-ease);
+  }
+
+  .glass-tile.is-speaking {
+    border-color: rgba(56, 97, 251, 0.9);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge-top),
+      0 0 0 3px rgba(56, 97, 251, 0.4),
+      var(--glass-shadow-near),
+      var(--glass-shadow-far);
+  }
+
+  /* Small vibrancy badge for name/mic overlays sitting on top of arbitrary
+     video content — deliberately darker/higher-alpha than the ambient glass
+     tokens so captions stay WCAG-AA legible no matter what's playing behind. */
+  .glass-badge {
+    background: rgba(8, 8, 10, 0.5);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  /* Springy tap feedback for plain icon buttons that don't need their own
+     blur layer (keeps backdrop-filter off "dozens of elements"). */
+  .liquid-tap {
+    transition:
+      transform 220ms var(--glass-spring),
+      box-shadow 220ms var(--glass-spring),
+      filter 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .liquid-tap:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+  }
+
+  .liquid-tap:active {
+    transform: scale(0.94);
+    transition-duration: 120ms;
   }
 
   .field-label {
@@ -87,48 +272,188 @@ video {
   }
 
   .app-input {
-    border: 1px solid var(--stroke);
-    background: var(--input-bg);
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
     color: var(--text-primary);
     border-radius: var(--radius-input);
+    transition:
+      border-color 200ms var(--glass-ease),
+      background-color 200ms var(--glass-ease),
+      box-shadow 200ms var(--glass-ease);
 
-    @apply w-full px-4 py-3 outline-none transition;
+    @apply w-full px-4 py-3 outline-none;
+  }
+
+  .app-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .app-input:hover {
+    background: var(--glass-bg-strong);
   }
 
   .app-input:focus {
-    box-shadow: 0 0 0 2px var(--ring-brand);
+    background: var(--glass-bg-strong);
+    border-color: rgba(56, 97, 251, 0.7);
+    box-shadow: 0 0 0 3px rgba(56, 97, 251, 0.25);
   }
 
   .app-btn-primary {
-    background: var(--brand-strong);
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(180deg, #3861fb 0%, var(--brand-strong) 100%);
     color: var(--text-secondary);
     border-radius: var(--radius-btn);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), var(--glass-shadow-near);
+    transition:
+      transform 240ms var(--glass-spring),
+      box-shadow 240ms var(--glass-spring),
+      filter 200ms ease;
 
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
   }
 
   .app-btn-primary:hover {
-    filter: brightness(1.05);
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), var(--glass-shadow-near), var(--glass-shadow-far);
+  }
+
+  .app-btn-primary:active {
+    transform: scale(0.98);
+    transition-duration: 120ms;
   }
 
   .app-btn-secondary {
-    border: 1px solid var(--stroke);
+    position: relative;
+    isolation: isolate;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
     color: var(--text-primary);
-    background: var(--bg-surface);
     border-radius: var(--radius-btn);
+    box-shadow: inset 0 1px 0 var(--glass-edge-top), var(--glass-shadow-near);
+    transition:
+      transform 240ms var(--glass-spring),
+      box-shadow 240ms var(--glass-spring),
+      background-color 200ms var(--glass-ease);
 
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
   }
 
   .app-btn-secondary:hover {
-    background: var(--hover-surface);
+    background: var(--glass-bg-strong);
+    transform: translateY(-1px);
+  }
+
+  .app-btn-secondary:active {
+    background: var(--glass-bg-pressed);
+    transform: scale(0.98);
+    transition-duration: 120ms;
   }
 
   .app-btn-danger {
-    background: linear-gradient(140deg, var(--danger), var(--danger-strong));
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(180deg, #fb5b7c 0%, var(--danger-strong) 100%);
     color: #fff;
     border-radius: var(--radius-btn);
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold transition hover:brightness-105;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), var(--glass-shadow-near);
+    transition:
+      transform 240ms var(--glass-spring),
+      box-shadow 240ms var(--glass-spring),
+      filter 200ms ease;
+
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
+  }
+
+  .app-btn-danger:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+
+  .app-btn-danger:active {
+    transform: scale(0.98);
+    transition-duration: 120ms;
+  }
+}
+
+@keyframes glass-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- Accessibility: focus must stay legible on translucent material ---------- */
+.glass-pill:focus-visible,
+.glass-chip:focus-visible,
+.app-btn-primary:focus-visible,
+.app-btn-secondary:focus-visible,
+.app-btn-danger:focus-visible,
+.liquid-tap:focus-visible,
+.app-input:focus-visible {
+  outline: 2px solid var(--ring-brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Respect user preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .glass-pill,
+  .glass-chip,
+  .glass-tile,
+  .glass-dropdown,
+  .app-input,
+  .app-btn-primary,
+  .app-btn-secondary,
+  .app-btn-danger,
+  .liquid-tap {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .glass-pill:hover,
+  .glass-pill:active,
+  .app-btn-primary:hover,
+  .app-btn-primary:active,
+  .app-btn-secondary:hover,
+  .app-btn-secondary:active,
+  .app-btn-danger:hover,
+  .app-btn-danger:active,
+  .liquid-tap:hover,
+  .liquid-tap:active {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card,
+  .glass-pill,
+  .glass-chip,
+  .glass-dropdown,
+  .app-input,
+  .app-btn-secondary,
+  .glass-badge {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--bg-surface) !important;
+  }
+
+  .glass-card::before,
+  .glass-pill::before,
+  .glass-chip::before,
+  .glass-dropdown::before,
+  .glass-tile::before {
+    display: none;
   }
 }
 

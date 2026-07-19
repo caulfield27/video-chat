@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, computed, effect, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  computed,
+  effect,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,6 +24,7 @@ import { IGalleryTile } from '@/app/types';
 
 const PAGE_SIZE = 9;
 const SPEAKING_THRESHOLD = 0.02;
+const TILE_ASPECT = 16 / 9;
 
 @Component({
   selector: 'call-gallery',
@@ -26,14 +36,18 @@ const SPEAKING_THRESHOLD = 0.02;
   `,
   imports: [CommonModule, LucideAngularModule, MediaStreamDirective],
 })
-export class CallGallery implements OnDestroy {
+export class CallGallery implements AfterViewInit, OnDestroy {
   readonly MicIcon = Mic;
   readonly MicOffIcon = MicOff;
   readonly ChevronLeftIcon = ChevronLeft;
   readonly ChevronRightIcon = ChevronRight;
 
+  readonly gridEl = viewChild<ElementRef<HTMLDivElement>>('gridEl');
+
   private readonly localColor: string;
   private readonly page = signal(0);
+  private readonly containerSize = signal({ width: 0, height: 0 });
+  private resizeObserver: ResizeObserver | null = null;
 
   readonly tiles = computed<IGalleryTile[]>(() => {
     const local: IGalleryTile = {
@@ -75,12 +89,34 @@ export class CallGallery implements OnDestroy {
     return this.tiles().slice(start, start + PAGE_SIZE);
   });
 
+
   readonly gridDims = computed(() => {
     const count = this.pageTiles().length;
+    const { width, height } = this.containerSize();
+
     if (count <= 1) return { cols: 1, rows: 1 };
-    if (count === 2) return { cols: 2, rows: 1 };
-    if (count <= 4) return { cols: 2, rows: 2 };
-    return { cols: 3, rows: 3 };
+    if (!width || !height) return this.fallbackDims(count);
+
+    let best = { cols: 1, rows: count, area: 0 };
+    for (let cols = 1; cols <= count; cols++) {
+      const rows = Math.ceil(count / cols);
+      const cellW = width / cols;
+      const cellH = height / rows;
+
+      let tileW = cellW;
+      let tileH = tileW / TILE_ASPECT;
+      if (tileH > cellH) {
+        tileH = cellH;
+        tileW = tileH * TILE_ASPECT;
+      }
+
+      const area = tileW * tileH;
+      if (area > best.area) {
+        best = { cols, rows, area };
+      }
+    }
+
+    return { cols: best.cols, rows: best.rows };
   });
 
   readonly activeSpeakerId = computed(() => {
@@ -125,7 +161,21 @@ export class CallGallery implements OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    const el = this.gridEl()?.nativeElement;
+    if (!el) return;
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      this.containerSize.set({ width, height });
+    });
+    this.resizeObserver.observe(el);
+  }
+
   ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
     this.audioLevel.reset();
   }
 
@@ -155,5 +205,11 @@ export class CallGallery implements OnDestroy {
     void video.play().catch((err) => {
       console.warn('video playback was blocked', err);
     });
+  }
+
+  private fallbackDims(count: number) {
+    if (count === 2) return { cols: 1, rows: 2 };
+    if (count <= 4) return { cols: 2, rows: 2 };
+    return { cols: 3, rows: 3 };
   }
 }

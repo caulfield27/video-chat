@@ -1,6 +1,7 @@
 <aside
-  class="bg-[var(--bg-primary)] glass-card flex h-full min-h-0 flex-col overflow-hidden max-md:fixed max-md:inset-0 max-md:w-screen max-md:h-[100svh] max-md:rounded-none z-[99]"
+  class="glass-card flex h-full min-h-0 flex-col max-md:fixed max-md:inset-0 max-md:w-screen max-md:h-[100svh] max-md:rounded-none z-[99]"
 >
+  <div class="flex h-full min-h-0 flex-1 flex-col overflow-hidden rounded-[inherit]">
   <!-- Header -->
   <div
     class="flex items-center justify-between border-b border-[var(--stroke)] max-lg:border-none px-4 py-3 shrink-0"
@@ -69,11 +70,12 @@
 
       <button
         (click)="handleSendMessage()"
-        class="flex items-center justify-center rounded-xl px-4 py-2 bg-[var(--brand)] text-white hover:opacity-90 transition"
+        class="liquid-tap flex items-center justify-center rounded-xl px-4 py-2 bg-[var(--brand)] text-white"
         [attr.aria-label]="i18n.t('call.sendAria')"
       >
         <lucide-icon [img]="SendIcon" />
       </button>
     </div>
+  </div>
   </div>
 </aside>

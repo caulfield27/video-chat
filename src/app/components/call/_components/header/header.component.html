@@ -52,7 +52,7 @@
             </p>
             <div class="flex items-center gap-2">
               <code
-                class="text-sm font-mono font-semibold text-[var(--brand)] bg-[--bg-surface] px-3 py-1 rounded-md border border-[var(--stroke)]"
+                class="glass-chip text-sm font-mono font-semibold text-[var(--text-primary)] px-3 py-1"
               >
                 {{ isCodHidden ? "••••••" : app.roomId() }}
               </code>
@@ -62,7 +62,7 @@
                 <!-- Toggle Visibility -->
                 <button
                   (click)="isCodHidden = !isCodHidden"
-                  class="p-2 text-[var(--text-muted)] hover:bg-[--bg-surface] rounded-lg transition-all duration-200"
+                  class="liquid-tap p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-colors duration-200"
                   [title]="isCodHidden! ? 'Hide code' : 'Show code'"
                 >
                   <svg
@@ -102,7 +102,7 @@
                 </button>
                 <button
                   (click)="handleCopy()"
-                  class="p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-all duration-200 relative group"
+                  class="liquid-tap p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-colors duration-200 relative group"
                   title="Copy room code"
                 >
                   <svg
@@ -144,7 +144,7 @@
       <div class="flex items-center gap-4 lg:gap-6 flex-shrink-0">
         <!-- Participants Count -->
         <div
-          class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+          class="glass-chip flex items-center space-x-3 px-4 py-2.5"
         >
           <div class="relative flex-shrink-0">
             <div class="flex items-center justify-center">
@@ -173,7 +173,7 @@
 
         <!-- Call Duration Timer -->
         <div
-          class="flex items-center space-x-3 bg-[var(--bg-surface)] px-4 py-2.5 rounded-lg border border-[var(--stroke)]"
+          class="glass-chip flex items-center space-x-3 px-4 py-2.5"
         >
           <div class="flex items-center justify-center relative">
             <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>
@@ -236,7 +236,7 @@
           </p>
           <div class="flex items-center gap-2">
             <code
-              class="text-xs font-mono font-semibold text-[var(--brand)] bg-[--bg-surface] px-2.5 py-1.5 rounded-md border border-[var(--stroke)] flex-1 truncate"
+              class="glass-chip text-xs font-mono font-semibold text-[var(--brand)] px-2.5 py-1.5 flex-1 truncate"
             >
               {{ isCodHidden ? "••••••" : app.roomId() }}
             </code>
@@ -246,7 +246,7 @@
               <!-- Toggle Visibility -->
               <button
                 (click)="isCodHidden = !isCodHidden"
-                class="p-1.5 text-[var(--text-muted)] hover:bg-[--bg-surface] rounded-lg transition-all duration-200"
+                class="liquid-tap p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-colors duration-200"
                 [title]="isCodHidden! ? 'Hide code' : 'Show code'"
               >
                 <svg
@@ -288,7 +288,7 @@
               <!-- Copy Button -->
               <button
                 (click)="handleCopy()"
-                class="p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-all duration-200"
+                class="liquid-tap p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] rounded-lg transition-colors duration-200"
                 title="Copy room code"
               >
                 <svg
@@ -329,7 +329,7 @@
       <div class="grid grid-cols-2 gap-3">
         <!-- Participants Count -->
         <div
-          class="flex items-center gap-2 bg-[var(--bg-surface)] px-3 py-2 rounded-lg border border-[var(--stroke)]"
+          class="glass-chip flex items-center gap-2 px-3 py-2"
         >
           <div class="relative flex-shrink-0">
             <div class="flex items-center justify-center">
@@ -355,7 +355,7 @@
 
         <!-- Call Duration Timer -->
         <div
-          class="flex items-center gap-2 bg-[var(--bg-surface)] px-3 py-2 rounded-lg border border-[var(--stroke)]"
+          class="glass-chip flex items-center gap-2 px-3 py-2"
         >
           <div class="flex items-center justify-center relative flex-shrink-0">
             <lucide-icon [img]="ClockIcon" color="#a3a3a3"></lucide-icon>
